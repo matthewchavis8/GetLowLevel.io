@@ -37,7 +37,7 @@ yarn-error.log*
 .venv/
 
 # Matt's Cookies
-./cookies.json
+Scraper/cookies.json
 
 # vercel
 .vercel
