@@ -1,0 +1,16 @@
+{
+  "url": "https://getcracked.io/question/1332/case-and-point-2",
+  "title": "Case and point 2",
+  "language": "Cpp",
+  "topic": "Language Knowledge",
+  "difficulty": "Easy",
+  "description": "// Headers\n\nint main() {\n    switch (1) {\n        int b;\n        case 1:\n            b = 1;\n            std::cout << b;\n    }\n}",
+  "options": [
+    "1",
+    "Undefined behavior",
+    "Junk",
+    "Compilation error, cannot declare b in the switch's \"scope\".",
+    "1"
+  ],
+  "correct_answer": "1"
+}
