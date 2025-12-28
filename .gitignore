@@ -20,6 +20,9 @@
 # production
 /build
 
+# Scraper
+./Scraper/
+
 # misc
 .DS_Store
 *.pem
