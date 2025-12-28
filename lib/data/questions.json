@@ -1,0 +1,1780 @@
+[
+  {
+    "title": "1. Variable Declaration in Switch Statement",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main() {\n    switch (1) {\n        int b;\n        case 1:\n            b = 1;\n            std::cout << b;\n    }\n}",
+    "options": [
+      "Undefined behavior",
+      "1",
+      "Compilation error, cannot declare b in the switch's \"scope\".",
+      "Junk"
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "2. Custom Deleters with Void Pointers",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nstruct X{\n    X(){ std::print(\"X() \"); }\n    ~X(){ std::print(\"~X() \"); }\n};\n\nstruct Y{\n    Y(){ std::print(\"Y() \"); }\n    ~Y(){ std::print(\"~Y() \"); }\n};\n\nint main(){\n    auto deleterX = [](X* ptr){ std::print(\"foo \"); delete ptr; };\n    auto deleterY = [](Y* ptr){ std::print(\"bar \"); delete ptr; };\n\n    std::shared_ptr<void> ptr1{ new X(), deleterX };\n    std::shared_ptr<void> ptr2{ new Y(), deleterY };\n    std::swap(ptr1, ptr2);\n}",
+    "options": [
+      "This invokes undefined behavior.",
+      "Compilation error since you cannot create shared_ptr<void> with typed deleters.",
+      "X() Y() foo ~X() bar ~Y()"
+    ],
+    "correct_answer": "X() Y() foo ~X() bar ~Y()"
+  },
+  {
+    "title": "3. BSS vs DATA Segment Placement",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Medium",
+    "description": "int A;\nint B = 0;\nint C = 0x01;\nstatic int D;\nstatic int E = 0;\nstatic int F = 0x01;\n\nvoid foo()\n{\n    static int G;\n    static int H = 0;\n    static int I = 0x01;\n}",
+    "options": [
+      "BSS, BSS, DATA, BSS, BSS, DATA, BSS, BSS, DATA"
+    ],
+    "correct_answer": "BSS, BSS, DATA, BSS, BSS, DATA, BSS, BSS, DATA"
+  },
+  {
+    "title": "4. Copy vs Move Constructor Selection",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nstruct A {\n    A(int x) : x(x) {}\n    A(const A& a) { x = 2; }\n    A(A&& a) { x = 3; }\n    int x;\n};\n\nvoid foo(A t) {\n    std::cout << t.x;\n}\n\nint main() {\n    A a(0);\n    foo(a);\n    foo(A(0));\n}",
+    "options": [
+      "20"
+    ],
+    "correct_answer": "20"
+  },
+  {
+    "title": "5. Function Lookup Performance",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "import math\nfrom math import sin\n\ndef a(x):\n    return math.sin(x)\n\ndef b(x):\n    return sin(x)\n\ndef c(x, sin=sin):\n    return sin(x)",
+    "options": [
+      "function b",
+      "function a",
+      "function c",
+      "It is indeterminate."
+    ],
+    "correct_answer": "function c"
+  },
+  {
+    "title": "6. Uninitialized Variable in Switch",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main() {\n    switch (1) {\n        int b;\n        case 1:\n            b = 1;\n            std::cout << b;\n    }\n}",
+    "options": [
+      "Compilation error, cannot declare b in the switch's \"scope\".",
+      "Junk",
+      "1",
+      "Undefined behavior"
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "7. Initialization Jumping Over by Case Label",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nint main() {\n    switch (1) {\n        int b{5};\n        case 1:\n            std::cout << b;\n    }\n}",
+    "options": [
+      "Compilation error, missing a break.",
+      "Compilation error, missing default case.",
+      "Compilation error, the value inside a switch must be an l-value.",
+      "Compilation error, b cannot be initialized."
+    ],
+    "correct_answer": "Compilation error, b cannot be initialized."
+  },
+  {
+    "title": "8. Producer Consumer Deadlock",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Easy",
+    "description": "// Headers\n\n/* Globals */\ngetcracked::queue buffer;\nstd::binary_semaphore buffer_semaphore{0};\nstd::mutex buffer_mutex;\n\n/* Consumer thread */\nvoid consumer() {\n    std::lock_guard<std::mutex> lock(buffer_mutex); \n    if (buffer.is_empty()) {\n        buffer_semaphore.acquire();\n    }\n    // consumer consumes resources\n}\n\n/* Producer thread */\nvoid producer() {\n    std::lock_guard<std::mutex> lock(buffer_mutex);\n    // producer produces resources\n    buffer_semaphore.release();\n}",
+    "options": [
+      "There is no issue; the semaphore ensures the consumer waits for resources",
+      "The producer thread will never acquire the buffer mutex; deadlock",
+      "The order of the signal and wait for the semaphore is not guaranteed; lost signal"
+    ],
+    "correct_answer": "The producer thread will never acquire the buffer mutex; deadlock"
+  },
+  {
+    "title": "9. Class vs Struct Forward Declaration",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "class A;\nstruct A { };\n\nint main() {\n    A a;\n}",
+    "options": [
+      "No, you cannot mix struct and class type decleration / definitions.",
+      "Yes, since class is a forward definition, which is then defined on the next line.",
+      "No, line 5 results in an ambiguous call between the struct and the class versions of A."
+    ],
+    "correct_answer": "Yes, since class is a forward definition, which is then defined on the next line."
+  },
+  {
+    "title": "10. Swapping Shared Pointers with Different Deleters",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nstruct X{\n    X(){ std::print(\"X() \"); }\n    ~X(){ std::print(\"~X() \"); }\n};\n\nstruct Y{\n    Y(){ std::print(\"Y() \"); }\n    ~Y(){ std::print(\"~Y() \"); }\n};\n\nint main(){\n    auto deleterX = [](X* ptr){ std::print(\"foo \"); delete ptr; };\n    auto deleterY = [](Y* ptr){ std::print(\"bar \"); delete ptr; };\n\n    std::shared_ptr<void> ptr1{ new X(), deleterX };\n    std::shared_ptr<void> ptr2{ new Y(), deleterY };\n    std::swap(ptr1, ptr2);\n}",
+    "options": [
+      "X() Y() foo ~X() bar ~Y()",
+      "Compilation error since you cannot create shared_ptr<void> with typed deleters.",
+      "This invokes undefined behavior."
+    ],
+    "correct_answer": "X() Y() foo ~X() bar ~Y()"
+  },
+  {
+    "title": "11. Memory Segment Classification",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Medium",
+    "description": "int A;\nint B = 0;\nint C = 0x01;\nstatic int D;\nstatic int E = 0;\nstatic int F = 0x01;\n\nvoid foo()\n{\n    static int G;\n    static int H = 0;\n    static int I = 0x01;\n}",
+    "options": [
+      "BSS, BSS, DATA, BSS, BSS, DATA, BSS, BSS, DATA"
+    ],
+    "correct_answer": "BSS, BSS, DATA, BSS, BSS, DATA, BSS, BSS, DATA"
+  },
+  {
+    "title": "12. Pass by Value with Custom Constructors",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nstruct A {\n    A(int x) : x(x) {}\n    A(const A& a) { x = 2; }\n    A(A&& a) { x = 3; }\n    int x;\n};\n\nvoid foo(A t) {\n    std::cout << t.x;\n}\n\nint main() {\n    A a(0);\n    foo(a);\n    foo(A(0));\n}",
+    "options": [
+      "20"
+    ],
+    "correct_answer": "20"
+  },
+  {
+    "title": "13. Default Argument Binding Performance",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "import math\nfrom math import sin\n\ndef a(x):\n    return math.sin(x)\n\ndef b(x):\n    return sin(x)\n\ndef c(x, sin=sin):\n    return sin(x)",
+    "options": [
+      "It is indeterminate.",
+      "function c",
+      "function a",
+      "function b"
+    ],
+    "correct_answer": "function c"
+  },
+  {
+    "title": "14. Memset on Polymorphic Types",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nstruct Foo {\n    virtual void fight() {\n        ++fights;\n        std::cout\n            << \"A foo fighter wins \" << fights << \" time(s)!\"\n            << std::endl;\n    }\n    int fights = 0;\n};\n\nstruct Bar : Foo {\n    void fight() override {\n        ++fights;\n        std::cout\n            << \"A bar fighter gets kicked out \" << fights << \" time(s)!\"\n            << std::endl;\n    }\n};\n\ntemplate <class T>\nvoid reset(T& foo) {\n    memset(&foo, 0, sizeof(foo));\n}\n\nvoid observe(Foo& foo) {\n    foo.fight();\n}\n\nint main() {\n    Foo     foo;    \n    Bar     bar;\n    \n    observe(foo);   \n    observe(bar);\n    \n    reset  (foo);     \n    reset(bar);\n    \n    observe(foo);   \n    observe(bar);\n}",
+    "options": [
+      "Quant",
+      "The program is valid, printing two rounds each of single fight events for Foo and Bar.",
+      "The program will not compile.",
+      "This invokes undefined behavior.",
+      "The program is valid, printing four rounds of Foo fighting events with number of wins capped at 2."
+    ],
+    "correct_answer": "This invokes undefined behavior."
+  },
+  {
+    "title": "15. Circular References Without Garbage Collection",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "\"\"\"Universal class\"\"\"\nclass Node:\n    def __init__(self):\n        self.ref = None\n\n\n\"\"\"Snippet A\"\"\"\nimport gc\n\ngc.disable()\nwhile True:\n    x = Node()\n    y = Node()\n    x.ref = y\n    y.ref = x\n    # x and y out of scope here\n\n\n\"\"\"Snippet B\"\"\"\nimport gc\n\ngc.disable()\nwhile True:\n    x = Node()\n    y = Node()\n    x.ref = y\n    # x and y out of scope here",
+    "options": [
+      "Both will crash",
+      "A will run indefinitely; B will crash",
+      "Both will run indefinitely",
+      "A will crash; B runs indefinitely"
+    ],
+    "correct_answer": "A will crash; B runs indefinitely"
+  },
+  {
+    "title": "16. Auto Type Deduction with Mixed Types",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "int main() {\n    auto x = 1, y = 0.1;\n}",
+    "options": [
+      "double",
+      "Compilation error",
+      "Undefined behavior",
+      "int"
+    ],
+    "correct_answer": "Compilation error"
+  },
+  {
+    "title": "17. Counting Integers in Heterogeneous List",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "arr = [1, \"hello\", 2, \"world\", 5, 9, 7, 5.6456364, ({}, []), [45]]",
+    "options": [
+      "3"
+    ],
+    "correct_answer": "3"
+  },
+  {
+    "title": "18. Programming Concept Quiz",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "5"
+    ],
+    "correct_answer": "5"
+  },
+  {
+    "title": "19. Modifying Variable Twice Without Sequence Point",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "int main() {\n    int x = 0;\n    int y = ++x * x++;\n    std::cout << y;\n}",
+    "options": [
+      "Quant",
+      "Compilation error",
+      "0",
+      "1",
+      "Undefined behavior"
+    ],
+    "correct_answer": "Undefined behavior"
+  },
+  {
+    "title": "20. Python List Growth Strategy",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "# list of length 10\narr = [1, \"hello\", 2, \"world\", 5, 9, 7, 5.6456364, ({}, []), [45]]\n\narr.append(0)",
+    "options": [
+      "arr allocates 8 new memory slots (for a total of 18).",
+      "arr allocates 10 (double) new memory slots (for a total of 20)."
+    ],
+    "correct_answer": "arr allocates 8 new memory slots (for a total of 18)."
+  },
+  {
+    "title": "21. Mutex Guard Memory Leak",
+    "language": "Rust",
+    "topic": null,
+    "difficulty": "Medium",
+    "description": "use std::sync::{Arc, Mutex};\nuse std::thread;\n\nfn main() {\n    let data = Arc::new(Mutex::new(vec![1, 2, 3]));\n    let mut handles = vec![];\n\n    for i in 0..3 {\n        let data = Arc::clone(&data);\n        let handle = thread::spawn(move || {\n            let mut vec = data.lock().unwrap();\n            vec.push(i);\n            \n            // Intentionally forget to drop the guard\n            std::mem::forget(vec);\n        });\n        handles.push(handle);\n    }\n\n    for handle in handles {\n        handle.join().unwrap();\n    }\n\n    println!(\"Final: {:?}\", data.lock().unwrap());\n}",
+    "options": [
+      "Undefined behaviour",
+      "Deadlock",
+      "Compilation error",
+      "Prints Final: [1, 2, 3, 0, 1, 2]"
+    ],
+    "correct_answer": "Deadlock"
+  },
+  {
+    "title": "22. String to Int Conversion Edge Cases",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nint main() {\n    bool x = (std::stoi(\"  000aaa\") == std::atoi(\"invalid\"));\n    std::cout << x;\n}",
+    "options": [
+      "0",
+      "1",
+      "Compilation error",
+      "An exception is thrown."
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "23. Technical Knowledge Assessment",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "24. Computer Science Fundamentals",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "25. Systems Programming Concepts",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "26. Low-Level Programming Quiz",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "27. Hardware Architecture Question",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "28. Memory Management Concepts",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "29. Operating System Fundamentals",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "30. Network Programming Basics",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "31. Database Systems Overview",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "32. Security Fundamentals",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "33. Performance Optimization",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "34. Concurrent Programming Concepts",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "35. Compiler Design Principles",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "36. Algorithm Analysis Basics",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "37. Data Structure Fundamentals",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "38. File System Operations",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "39. Process Management",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "40. Thread Synchronization",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "41. Navigation Menu Options",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "Go to questions",
+      "Go to problems",
+      "Go to account",
+      "Go to playlists",
+      "Go to videos"
+    ],
+    "correct_answer": null
+  },
+  {
+    "title": "42. Site Navigation Elements",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "Go to questions",
+      "Go to problems",
+      "Go to account",
+      "Go to playlists",
+      "Go to videos"
+    ],
+    "correct_answer": null
+  },
+  {
+    "title": "43. Empty Question Placeholder",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [],
+    "correct_answer": null
+  },
+  {
+    "title": "44. Placement New Over Existing Object",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "// Headers\n\nstruct A {\n    virtual int f() { return 1; }\n};\n\nstruct B : A {\n    int f() override { return 2; }\n};\n\nint call(A* a) {\n    return a->f();\n}\nint main() {\n    A a;\n    int x = call(&a);\n    B* b = new (&a) B;\n    int y = call(b);\n    std::cout << x << y;\n}",
+    "options": [
+      "11",
+      "12",
+      "Undefined behavior",
+      "Compilation error"
+    ],
+    "correct_answer": "11"
+  },
+  {
+    "title": "45. Recreating Object with Const Member",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\nstruct A {\n    const int a;\n};\n\nint main() {\n    A* x = new A(1);\n    x->~A();\n    new (x) A{2};\n    std::cout << x->a;\n}",
+    "options": [
+      "Quant",
+      "1",
+      "Compilation error",
+      "Undefined behavior",
+      "2"
+    ],
+    "correct_answer": "Undefined behavior"
+  },
+  {
+    "title": "46. Callable Protocol Type Hint",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "import typing\n\ndef bar(fct: typing.Callable[..., None]):\n    fct(\"hello\")\n#       ^^^^^^^ Expected `int`, found `Literal[\"hello\"]`",
+    "options": [
+      "[int]"
+    ],
+    "correct_answer": "[int]"
+  },
+  {
+    "title": "47. Header Include Multiple Definition Error",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "//  a.h\nint x = 5;  \n\n// b.h\n#include \"a.h\"\n\n// main.cpp\n#include \"a.h\"\n#include \"b.h\" \n\nint main() \n{\n    return x;\n}",
+    "options": [
+      "Compilation error: multiple definition of x",
+      "The program will compile and run successfully, returning 5",
+      "Runtime error: program crashes when returning x",
+      "Warning only: the compiler warns about duplicate header inclusions but still runs"
+    ],
+    "correct_answer": "Compilation error: multiple definition of x"
+  },
+  {
+    "title": "48. Relaxed Memory Ordering in Lock Release",
+    "language": "Rust",
+    "topic": null,
+    "difficulty": "Hard",
+    "description": "fn enter_critical_section() {\n    while LOCK.swap(true, Ordering::Acquire) {}\n}\n\nfn exit_critical_section() {\n     // Downgraded to Relaxed\n    LOCK.store(false, Ordering::Relaxed);\n}\n\nfn worker_thread() {\n    enter_critical_section();\n    unsafe {\n        let val = COUNTER; \n        COUNTER = val + 1;\n    }\n    exit_critical_section();\n}",
+    "options": [
+      "Only the read of COUNTER is affected, since Release mainly blocks reordering of later stores.",
+      "Both the read and the write are at risk, as Relaxed removes all memory-ordering guarantees."
+    ],
+    "correct_answer": "Only the write to COUNTER is affected, because Relaxed provides no guarantee that prior writes complete before clearing the lock."
+  },
+  {
+    "title": "49. Module Import with __main__ Reference",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "# __main__.py\nprint(\"__main__\", end=\"\")\nimport foo\nprint(1, end=\"\")\n\n# foo.py\nprint(\"foo\", end=\"\")\nimport bar\nprint(2, end=\"\")\n\n# bar.py\nprint(\"bar\", end=\"\")\nimport __main__\nprint(3, end=\"\")",
+    "options": [
+      "foobar32"
+    ],
+    "correct_answer": "foobar32"
+  },
+  {
+    "title": "50. Circular Module Import Behavior",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "# foo.py\nprint(\"foo\", end=\"\")\nimport bar\nprint(1, end=\"\")\n\n# bar.py\nprint(\"bar\", end=\"\")\nimport foo\nprint(2, end=\"\")",
+    "options": [
+      "foobarfoo121"
+    ],
+    "correct_answer": "foobarfoo121"
+  },
+  {
+    "title": "51. Default Argument Evaluation Timing",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "x = 10\n\ndef foo(y = x):\n    print(y, end=\"\")\n    x = 99\n    return x\n\nx = 20\nprint(foo(), end=\"\")",
+    "options": [
+      "2099",
+      "Error",
+      "1020",
+      "1099"
+    ],
+    "correct_answer": "1099"
+  },
+  {
+    "title": "52. Three Module Circular Import",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "# foo.py\nprint(\"foo\", end=\"\")\nimport bar\nprint(1, end=\"\")\n\n# bar.py\nprint(\"bar\", end=\"\")\nimport foo\nprint(2, end=\"\")\n\n# fiz.py\nprint(\"fiz\", end=\"\")\nimport foo\nprint(3, end=\"\")",
+    "options": [
+      "fizfoobar213"
+    ],
+    "correct_answer": "fizfoobar213"
+  },
+  {
+    "title": "53. Protocol __call__ Method Definition",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "import typing\n\nclass Fct(typing.Protocol):\n    def ...(self, a: int, b: str) -> None:\n        pass\n\ndef fct(a: int, b: str) -> None:\n    pass\n\na_callable: Fct = fct\na_callable(a=10, b=\"hi\")",
+    "options": [
+      "__call__"
+    ],
+    "correct_answer": "__call__"
+  },
+  {
+    "title": "54. C++ Numeric Constant",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "Quant",
+      "4"
+    ],
+    "correct_answer": "4"
+  },
+  {
+    "title": "55. cout vs cerr Buffering Differences",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "std::cout writes to the console by default, while std::cerr writes to a log file by default.",
+      "std::cout is declared in <iostream>, while std::cerr is declared in <ostream>",
+      "std::cout may be buffered, while std::cerr is always unbuffered by default."
+    ],
+    "correct_answer": "std::cout may be buffered, while std::cerr is always unbuffered by default."
+  },
+  {
+    "title": "56. C++ Medium Challenge",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "Quant",
+      "No",
+      "Yes"
+    ],
+    "correct_answer": "Yes"
+  },
+  {
+    "title": "57. Deferred Async Without Wait",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Easy",
+    "description": "int work(int id) {\n    sleep_for(200ms);\n    cout << id;\n    return id;\n}\n\nint main() {\n    for (int i = 0; i < 3; ++i)\n        std::async(std::launch::deferred, work, i);\n}",
+    "options": [
+      "Quant",
+      "work never runs, and nothing is printed.",
+      "work runs asynchronously and 1, 2, 3 are printed in any order (e.g. 2, 3, 1).",
+      "work runs sequentially, but the order of printing is not guaranteed.",
+      "work runs sequentially and 1, 2, 3 is printed."
+    ],
+    "correct_answer": "work never runs, and nothing is printed."
+  },
+  {
+    "title": "58. Asyncio Task Creation Timing",
+    "language": "Python",
+    "topic": null,
+    "difficulty": "Medium",
+    "description": "import asyncio\n\nasync def ping():\n    print(\"ping\")\n    await asyncio.sleep(0)\n    print(\"pong\")\n\nasync def main():\n    task = asyncio.ensure_future(ping())\n    print(\"created\")\n    await task\n    print(\"done\")\n\nasyncio.get_event_loop().run_until_complete(main())",
+    "options": [
+      "ping created pong done",
+      "created ping pong done",
+      "ping pong created done",
+      "created done ping pong",
+      "created   ping   pong   done"
+    ],
+    "correct_answer": "created   ping   pong   done"
+  },
+  {
+    "title": "59. Variable Length Array on Stack",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "int main() {\n    int n = some_runtime_value();\n    int arr[n] { };\n\n    return 0;\n}",
+    "options": [
+      "The stack pointer is adjusted.",
+      "There are calls to `malloc` and `free` at the end of scope.",
+      "There are calls to `new` and `delete` at the end of scope."
+    ],
+    "correct_answer": "The stack pointer is adjusted."
+  },
+  {
+    "title": "60. Constexpr and Const Redundancy",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "// 1\nconst constexpr int a = 1;\n\n// 2\nint i = 1;\nconstexpr const int* b = &i;\n\n// 3 \nconstexpr const int c() { return 1; }\n\n// 4\nstruct d {\n    constexpr const static inline e = 1;\n};",
+    "options": [
+      "Quant",
+      "2"
+    ],
+    "correct_answer": "2"
+  },
+  {
+    "title": "61. Stack and Heap Allocation with New",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": null,
+    "description": "void main()\n{\n    int *x = new int( 0 );\n}",
+    "options": [
+      "Neither a stack nor a heap allocation take place.",
+      "Only a stack allocation takes place.",
+      "Only a heap allocation takes place.",
+      "Both a stack and heap allocation take place."
+    ],
+    "correct_answer": "Both a stack and heap allocation take place."
+  },
+  {
+    "title": "62. Trigraph Vector Initialization",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "// Headers\n\nint main() {\n   std::vector<double> v??<false ? 16 : 1??(\"abc\"??)??>;\n   std::cout << v.size();\n}",
+    "options": [
+      "1"
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "63. Static Assert in Constexpr Function",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "constexpr int second(int c) {\n    static_assert(c > 0);\n    return c;\n}\n\nconstexpr int first(int b) {\n    int result = second(b);\n    return result;\n}\n\nint main() {\n    constexpr int a = first(4);\n    std::cout << a;\n}",
+    "options": [
+      "static_assert(c > 0);",
+      "constexpr int a = first(4);",
+      "int result = second(b);",
+      "std::cout << a;"
+    ],
+    "correct_answer": "static_assert(c > 0);"
+  },
+  {
+    "title": "64. Union Member Access After Reassignment",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "union union_t {\n    char a;\n    int b;\n    long c;\n} Y;\n\nint main() {\n    Y.c = 0;\n    Y.a = 1;\n    std::cout << Y.b;\n    return 0;\n}",
+    "options": [
+      "1"
+    ],
+    "correct_answer": null
+  },
+  {
+    "title": "65. Auto with Braced Initializer Lists",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "int main()\n{\n  auto x = {1, 2, 3};\n  auto y{1, 2, 3};\n}",
+    "options": [
+      "x is int[], y is std::initializer_list<int>",
+      "Both are std::initializer_list<int>",
+      "x is std::initializer_list<int>, y is compilation error",
+      "Both are int"
+    ],
+    "correct_answer": "x is std::initializer_list<int>, y is compilation error"
+  },
+  {
+    "title": "66. Manual Memory Management with Placement New",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nstruct A {\n    A() { std::cout << \"a\"; }\n    ~A() { std::cout << \"b\"; }\n};\n\nint main() {\n    A* p1 = static_cast<A*>(operator new(sizeof(A)));\n\n    A* p2 = new A();\n    delete p2;\n\n    new (p1) A();\n    p1->~A();\n    operator delete(p1);\n\n    return 0;\n}",
+    "options": [
+      "abab"
+    ],
+    "correct_answer": "abab"
+  },
+  {
+    "title": "67. Nested Template Inheritance Identify",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\ntemplate <typename Type>\nstruct X {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"X\"; }\n};\n\ntemplate <typename Type>\nstruct Y : Type {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"Y\"; }\n};\n\nclass Z {\nprotected:\n    void bar() { std::cout << identify() << std::endl; }\n    static std::string_view identify() { return \"Z\"; }\n};\n\nint main() {\n    Y<X<Y<Z>>>{}.bar();\n}",
+    "options": [
+      "Quant",
+      "X",
+      "This doesn't compile.",
+      "Y",
+      "Z"
+    ],
+    "correct_answer": "X"
+  },
+  {
+    "title": "68. Template Base Class Method Access",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\ntemplate <typename Type>\nstruct X {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"X\"; }\n};\n\ntemplate <typename Type>\nstruct Y : Type {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"Y\"; }\n};\n\nclass Z {\nprotected:\n    void bar() { std::cout << identify() << std::endl; }\n    static std::string_view identify() { return \"Z\"; }\n};\n\nint main() {\n    Y<Z>{}.bar();\n}",
+    "options": [
+      "Quant",
+      "Y",
+      "This doesn't compile.",
+      "X",
+      "Z"
+    ],
+    "correct_answer": "Z"
+  },
+  {
+    "title": "69. Template Class Deduction Failure",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "// Headers\n\ntemplate <typename Type>\nstruct X {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"X\"; }\n};\n\ntemplate <typename Type>\nstruct Y : Type {\n    void bar() { std::cout << Type::identify() << std::endl; }\n    static std::string_view identify() { return \"Y\"; }\n};\n\nclass Z {\n    void bar() { std::cout << identify() << std::endl; }\n    static std::string_view identify() { return \"Z\"; }\n};\n\nint main() {\n    X{}.bar();\n}",
+    "options": [
+      "Quant",
+      "Y",
+      "This doesn't compile.",
+      "X",
+      "Z"
+    ],
+    "correct_answer": "This doesn't compile."
+  },
+  {
+    "title": "70. Array Size and Element Size",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "int x[5] = { 0, 1, 2, 3, 4, };",
+    "options": [
+      "Quant",
+      "20, 4"
+    ],
+    "correct_answer": "20, 4"
+  },
+  {
+    "title": "71. Bit Shifting Register Operations",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": null,
+    "description": "int x = 1;\nx <<= 1;\nx <<= 1;\nx <<= 1;\nx <<= 1;\nx <<= 1;\nx <<= 1;\nx <<= 1;",
+    "options": [],
+    "correct_answer": "Bit shifting operations are performed in CPU registers, not directly in memory, so the result is contained within the register before being written back."
+  },
+  {
+    "title": "72. Borrow Checker Prevents Vector Mutation",
+    "language": "Rust",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "fn main() {\n    let mut v = vec![1, 2, 3];\n    let first = &v[0];\n    v.push(4);\n    println!(\"{}\", first);\n}",
+    "options": [
+      "Runtime panic",
+      "Prints 1",
+      "Prints 4",
+      "Compile-time error"
+    ],
+    "correct_answer": "Compile-time error"
+  },
+  {
+    "title": "73. Calling Method on Null Pointer",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nstruct A {\n    A() = default;\n    void foo()  { *this = A(); }\n};\n\nint main() {\n    A* a = nullptr;\n    a->foo();\n}",
+    "options": [
+      "Implementation defined",
+      "Ill-formed",
+      "Unspecified behavior",
+      "Undefined behavior"
+    ],
+    "correct_answer": "Undefined behavior"
+  },
+  {
+    "title": "74. mdspan Multi-dimensional Array Indexing",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\ntemplate <typename T, std::size_t Row, std::size_t Col>\nusing ArrayFlat2d = std::array<T, Row * Col>;\n\nint main() {\n    ArrayFlat2d<int, 3, 4> arr {\n        1, 2, 3, 4,\n        5, 6, 7, 8,\n        9, 10, 11, 12 };\n\n    std::mdspan mdView { arr.data(), 4, 3 };\n    std::size_t rows { mdView.extents().extent(0) };\n    std::size_t cols { mdView.extents().extent(1) };\n    std::cout << mdView[rows - 1, 1];\n}",
+    "options": [
+      "11"
+    ],
+    "correct_answer": "11"
+  },
+  {
+    "title": "75. Variadic Arguments Type Annotation",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "import typing\n\ndef foo(*x: int):\n    typing.reveal_type(x)",
+    "options": [
+      "tuple[int, ...]"
+    ],
+    "correct_answer": "tuple[int, ...]"
+  },
+  {
+    "title": "76. Tuple Type Annotation vs Constructor",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "import typing\n\neggs: tuple[int] = tuple(int(x) for x in input().split())\n\ntyping.reveal_type(eggs[1])",
+    "options": [
+      "Any"
+    ],
+    "correct_answer": "Any"
+  },
+  {
+    "title": "77. Dictionary Union Type Inference",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "import typing\n\nspam: int = 10\ngraal: str = \"Arthur\"\n\neggs = {\n    \"spam\": spam,\n    \"graal\": graal,\n}\n\ntyping.reveal_type(eggs[\"spam\"])",
+    "options": [
+      "float",
+      "int",
+      "int | str",
+      "str"
+    ],
+    "correct_answer": "int | str"
+  },
+  {
+    "title": "78. Narrowing Conversion with Braced Init",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "int a = static_cast<unsigned int>(-500);\nint b{ a };\nunsigned int c = unsigned int { 5 };\nunsigned int d = int { -10 };",
+    "options": [
+      "int a = static_cast<unsigned int>(-500)",
+      "unsigned int d = int {-10}",
+      "int b {a}",
+      "unsigned int c = unsigned int {5}"
+    ],
+    "correct_answer": "unsigned int c = unsigned int {5}"
+  },
+  {
+    "title": "79. Custom make_unique Ambiguity",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nnamespace std {\n    template <typename T, typename... Args>\n    std::unique_ptr<T> make_unique(Args&&... args) {\n        // Pretend meaningful work is done here with args\n        return { };\n    }\n}\n\n\n\nint main() {\n    auto i = std::make_unique<int>(1);\n}",
+    "options": [
+      "No, there won't be an issue, since argument dependent lookup will choose the correct overload.",
+      "Yes, the handrolled make_unique will results in an ambiguous call."
+    ],
+    "correct_answer": "Yes, the handrolled make_unique will results in an ambiguous call."
+  },
+  {
+    "title": "80. Python Integer Object Identity",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "a=258;b=258;a is b;",
+    "options": [
+      "True, 258 lies within the bounds of the small integer cache, so only one instance of 258 is created.",
+      "False, a and b both point to distinctly allocated 258 integer objects.",
+      "This results in a runtime error.",
+      "True, 258 is a temporary literal reused at compile time (as an optimization)."
+    ],
+    "correct_answer": null
+  },
+  {
+    "title": "81. Binary True/False Question",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "Quant",
+      "Yes",
+      "No"
+    ],
+    "correct_answer": "Yes"
+  },
+  {
+    "title": "82. SQL Query Execution Order",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": "SELECT\nFROM\nJOIN\nON\nWHERE\nGROUP BY\nHAVING\nORDER BY\nLIMIT",
+    "options": [
+      "FROM, JOIN, ON, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT"
+    ],
+    "correct_answer": "FROM, JOIN, ON, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT"
+  },
+  {
+    "title": "83. Completion Queue Purpose",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "To aggregate pending DMA operations waiting to be processed by the driver",
+      "To hold completion entries (CQEs) indicating finished work (WQEs)",
+      "To repost DMA memory back to the driver",
+      "To buffer received packets"
+    ],
+    "correct_answer": "To hold completion entries (CQEs) indicating finished work (WQEs)"
+  },
+  {
+    "title": "84. Simple Math Equation",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": "X + Y == 10",
+    "options": [
+      "Quant",
+      "1"
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "85. Comprehension Syntax Types",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "lst = [1,2,3,4,5,6,7,8,9,10]\n\nl = [n ** n for n in lst]\ns = {n ** n for n in lst}\nd = {n : n **n for n in lst}\nt = (n ** n for n in lst)\n\nprint(type(l))\nprint(type(s))\nprint(type(d))\nprint(type(t))",
+    "options": [
+      "Quant",
+      "<class 'list'>",
+      "<class 'generator'>",
+      "<class 'dict'>",
+      "<class 'tuple'>"
+    ],
+    "correct_answer": "<class 'generator'>"
+  },
+  {
+    "title": "86. Interrupt vs Polling Benefits",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "Quant",
+      "To avoid the device writing to host memory",
+      "Interrupts reduce CPU usage and PCIe traffic by occupying the CPU only when work is complete",
+      "Polling may cause significant cache-coherency overhead",
+      "Interrupts guarantee that completions are processed in a strictly and coherent order"
+    ],
+    "correct_answer": "Interrupts reduce CPU usage and PCIe traffic by occupying the CPU only when work is complete"
+  },
+  {
+    "title": "87. Interrupt Request Types",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "SoftIRQ",
+      "IRQ",
+      "IPI",
+      "NAPI polling"
+    ],
+    "correct_answer": "IRQ"
+  },
+  {
+    "title": "88. SoftIRQ Handler Overflow Behavior",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "The handler is queued to run again on a timer interrupt",
+      "Kernel panic to avoid livelock",
+      "The remaining work is deferred to ksoftirqd",
+      "Handler continues to completion, logs in debug kernel builds"
+    ],
+    "correct_answer": "The remaining work is deferred to ksoftirqd"
+  },
+  {
+    "title": "89. Network Packet Processing Context",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "In userspace",
+      "In the hard interrupt context",
+      "In a kworker",
+      "In the softirq context"
+    ],
+    "correct_answer": "In the softirq context"
+  },
+  {
+    "title": "90. Hard IRQ Handler Responsibilities",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "Quant",
+      "Acknowledging the interrupted and scheduling deferred processing",
+      "Copying large buffers from the device into user space",
+      "Deferring work to ksoftirqd",
+      "Running the full net rx NAPI polling loop"
+    ],
+    "correct_answer": "Acknowledging the interrupted and scheduling deferred processing"
+  },
+  {
+    "title": "91. Doorbell Register Purpose",
+    "language": null,
+    "topic": null,
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "Checking if the work is complete",
+      "Checking the device is ready for work",
+      "To transfer data payloads to the device without DMA",
+      "Notifying the device"
+    ],
+    "correct_answer": "Notifying the device"
+  },
+  {
+    "title": "92. Top-Half vs Bottom-Half Interrupt Processing",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "The Top-half runs in process context, whilst the Bottom-half runs in user-space context.",
+      "The Top-half only executed on PREEMPT_RT kernels"
+    ],
+    "correct_answer": "The Top-half performs minimal time-critical work in interrupt context. The bottom-half runs deferred work in softirq context."
+  },
+  {
+    "title": "93. Dangling Else Ambiguity",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main()\n{\n    if (true)\n        if (false)\n            std::cout << \"Partially true\";\n    else\n        std::cout << \"Totally false\";\n}",
+    "options": [
+      "Totally false",
+      "Partially true",
+      "This doesn't compile.",
+      "Nothing"
+    ],
+    "correct_answer": "Totally false"
+  },
+  {
+    "title": "94. Large Integer String Length",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "number = 10**5000\nprint(len(str(number)))",
+    "options": [
+      "Error",
+      "4999",
+      "5000",
+      "5001"
+    ],
+    "correct_answer": null
+  },
+  {
+    "title": "95. Float Infinity Representation",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "exp_number = 1e+500\nprint(exp_number)",
+    "options": [
+      "inf"
+    ],
+    "correct_answer": "inf"
+  },
+  {
+    "title": "96. Glob Pattern Matching with Brackets",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "# directory/\n#     [Low]-ipsum.json\n#     [URGENT]-ipsum.json\n#     not-urgent-ipsum.txt\n#     urgent-ipsum.json\n#     URGENT-ipsum.txt\n\nimport pathlib\n\ndirectory = pathlib.Path(\"directory\")\nmatch = list(directory.glob(\"*[URGENT]*.json\"))\nprint(len(match))",
+    "options": [
+      "3"
+    ],
+    "correct_answer": "3"
+  },
+  {
+    "title": "97. Case Sensitive Glob Patterns",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "# directory/\n#     [Low]-ipsum.json\n#     [URGENT]-ipsum.json\n#     not-urgent-ipsum.txt\n#     urgent-ipsum.json\n#     URGENT-ipsum.txt\n\nimport pathlib\n\ndirectory = pathlib.Path(\"directory\")\nmatch = list(directory.glob(\"*URGENT*.txt\"))\nprint(len(match))",
+    "options": [
+      "2"
+    ],
+    "correct_answer": "2"
+  },
+  {
+    "title": "98. F-String Variable Debug Syntax",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "alfred = 10\nrobert = 200\njoe = 30\nprint(f\"{alfred=},{robert=},{joe=}\")",
+    "options": [
+      "alfred=10,robert=200,joe=30"
+    ],
+    "correct_answer": "alfred=10,robert=200,joe=30"
+  },
+  {
+    "title": "99. Arrow Operator Desugaring",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "a->foo();",
+    "options": [
+      "&a.foo()",
+      "(*a).foo()",
+      "a->*foo()",
+      "(&a).foo()"
+    ],
+    "correct_answer": "(*a).foo()"
+  },
+  {
+    "title": "100. Single Dispatch with Never Return",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "import functools\nimport typing\n\n@functools.singledispatch\ndef foo(_) -> typing.Never:\n    raise NotImplementedError\n\n@foo.register\ndef _(x: str) -> str:\n    print(\"str\", x)\n    return x + \"a\"\n\n@foo.register\ndef _(x: int) -> int:\n    print(\"int\", x)\n    return x + 1\n\nrabbit = foo(10)\ntyping.reveal_type(rabbit)",
+    "options": [
+      "Never"
+    ],
+    "correct_answer": "Never"
+  },
+  {
+    "title": "101. Typing Overloads vs Runtime Dispatch",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "import typing\n\n@typing.overload\ndef foo(x: str) -> str:\n    print(\"str\", x)\n    return x + \"a\"\n\n@typing.overload\ndef foo(x: int) -> int:\n    print(\"int\", x)\n    return x + 1\n\ndef foo(x):\n    print(\"default\", x)\n    return x\n\nfoo(10)",
+    "options": [
+      "default 10"
+    ],
+    "correct_answer": "default 10"
+  },
+  {
+    "title": "102. Variable Shadowing with Uniform Initialization",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint x{42};\n\nint main() {\n    int x{x};\n    std::cout << x;\n}",
+    "options": [
+      "42",
+      "Nothing, this results in a compilation error.",
+      "0",
+      "Junk"
+    ],
+    "correct_answer": "Junk"
+  },
+  {
+    "title": "103. String to Tuple Conversion",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "name = tuple(\"George\")\nprint(name)",
+    "options": [
+      "(“George”,)",
+      "“George”",
+      "('G', 'e', 'o', 'r', 'g','e')",
+      "(“George”)"
+    ],
+    "correct_answer": "('G', 'e', 'o', 'r', 'g','e')"
+  },
+  {
+    "title": "104. Type Casting Through Object",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "v: str = \"123\"\nrabbit = typing.cast(int, typing.cast(object, v))\nreveal_type(rabbit)",
+    "options": [
+      "int",
+      "str",
+      "Error",
+      "object"
+    ],
+    "correct_answer": "int"
+  },
+  {
+    "title": "105. Move Semantics Misdirection",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nstruct A {\n    A() { cout << 'a'; }\n    A(const A &a) { cout << 'b'; }\n    A(A &&a) noexcept { std::cout << 'c'; }\n    A& operator=(const A &a) { cout << 'd'; return *this; }\n    A& operator=(A && a) noexcept { cout << 'e'; return *this; }\n    ~A() { cout << 'f'; }\n};\n\nA foo(A a) {\n    a = A();\n    cout << 'H';\n    return std::move(a);\n}\n\nint main() {\n    A *a = new A;\n    foo(*a);\n\n    if (a) {\n        A b = A();\n        A c;\n        b = c;\n    }\n\n    cout << 'K';\n\n    delete a;\n}",
+    "options": [
+      "Nvidia",
+      "abaefHcffaadffKf",
+      "Step",
+      "Event",
+      "Output",
+      "1",
+      "new A",
+      "default ctor",
+      "a",
+      "2",
+      "foo(*a) param",
+      "copy ctor",
+      "b",
+      "3",
+      "a = A()",
+      "default ctor + move assign + dtor",
+      "a e f",
+      "4",
+      "H",
+      "literal",
+      "5",
+      "return std::move(a)",
+      "move ctor + 2 dtors",
+      "c f f",
+      "6",
+      "A b = A();",
+      "default",
+      "7",
+      "A c;",
+      "8",
+      "b = c;",
+      "copy assignment",
+      "d",
+      "9",
+      "end of block",
+      "two dtors",
+      "f f",
+      "10",
+      "K",
+      "11",
+      "delete a",
+      "dtor",
+      "f"
+    ],
+    "correct_answer": "abaefHcffaadffKf"
+  },
+  {
+    "title": "106. Language Rules Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Hard",
+    "description": "import typing\n\ndef is_list_of_int(a_list: list[object]) -> typing.TypeIs[list[int]]:\n    return all(isinstance(x, int) for x in a_list)\n\nrabbit = list(range(10))\nif is_list_of_int(rabbit):\n    typing.reveal_type(rabbit)",
+    "options": [
+      "Narrowed type \"list[int]\" is not a subtype of input type \"list[object]\"",
+      "Success: no issues found",
+      "Revealed type is \"builtins.list[builtins.int]\"",
+      "Argument 1 to \"is_int\" has incompatible type \"list[int]\"; expected \"list[object]\""
+    ],
+    "correct_answer": "Success: no issues found"
+  },
+  {
+    "title": "107. Language Rules Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "import typing\n\ndef is_int(x: str) -> typing.TypeGuard[int]:\n    return bool(\"Nobody reads my code anyway, screw it\")\n\nrabbit = \"int\"\nif is_int(rabbit):\n    typing.reveal_type(rabbit)",
+    "options": [
+      "str",
+      "int",
+      "error: Narrowed type \"int\" is not a subtype of input type \"str\"",
+      "int | str"
+    ],
+    "correct_answer": "int"
+  },
+  {
+    "title": "108. Language Rules Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "import typing\n\ndef foo() -> int | str: ...\n\ndef is_int(x: object) -> bool:\n    return isinstance(x, int)\n\nrabbit = foo()\nif is_int(rabbit):\n    typing.reveal_type(rabbit)",
+    "options": [
+      "int",
+      "Any",
+      "Error",
+      "int | str"
+    ],
+    "correct_answer": "int | str"
+  },
+  {
+    "title": "109. Language Rules Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "from __future__ import braces\n\ndef foobar(): {\n    print(\"end\")\n}",
+    "options": [
+      "end",
+      "SyntaxError: not a chance",
+      "ModuleNotFoundError: No module named 'braces' in __future__",
+      "SyntaxError: future feature braces is not defined"
+    ],
+    "correct_answer": "SyntaxError: not a chance"
+  },
+  {
+    "title": "110. Language Rules Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "import random\n\ndef foo() -> None:\n    a: float | str\n\n    a = random.random()\n    a = input()",
+    "options": [
+      "No SyntaxError, mypy error",
+      "SyntaxError, mypy error",
+      "No SyntaxError, no mypy error",
+      "SyntaxError, no mypy error"
+    ],
+    "correct_answer": "No SyntaxError, no mypy error"
+  },
+  {
+    "title": "111. Dictionary get() with is None Check",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "key = \"panel_size\"\nif payload.get(key, 0) is None:\n    logger.error(\n        \"incomplete payload, API is not up-to-date\",\n        extra={\"missing_key\": key},\n    )",
+    "options": [
+      "{\"game\": 42}",
+      "{}",
+      "The log statement is unreachable regardless of the dictionary used.",
+      "{\"panel_size\": None}"
+    ],
+    "correct_answer": "{\"panel_size\": None}"
+  },
+  {
+    "title": "112. Chained Comparison Operators",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "a = 1\nb = [1, 2]\nc = [2, 3]\n\nprint(a in b<c, end=\" \")\nprint(a in c<b, end=\"\")",
+    "options": [
+      "True False",
+      "TypeError",
+      "False True",
+      "False False"
+    ],
+    "correct_answer": "True False"
+  },
+  {
+    "title": "113. Rust Function Pointer Ownership",
+    "language": "Rust",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "struct Foo {\n    func: fn(String),\n}\n\nfn bar(foo: Foo) {\n    foo.func(String::from(\"foobar\"));\n}\n\nfn baz(message: String) {\n    println!(\"{}\", message);\n}\n\nfn main() {\n    drop(bar(Foo { func: baz }));\n}",
+    "options": [
+      "Use after free",
+      "This results in a compilation error.",
+      "\"foobar\" is printed to the screen.",
+      "Nothing is printed to the screen."
+    ],
+    "correct_answer": "This results in a compilation error."
+  },
+  {
+    "title": "114. Circular Import with Class Reference",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "# getcracked/__init__.py\nprint(1, end=\"\")\n\n# getcracked/foo.py\nprint(2, end=\"\")\n\nimport getcracked.bar\n\nclass Stuff:\n    pass\n\ndef display() -> None:\n    stuff = Stuff()\n    print(getcracked.bar.do(stuff))\n\n# getcracked/bar.py\nprint(3, end=\"\")\n\nimport getcracked.foo\n\ndef do(stuff: getcracked.foo.Stuff) -> str:\n    return stuff.__class__.__name__\n\n# REPL\n>>> from getcracked.foo import display\n>>> display()",
+    "options": [
+      "Error"
+    ],
+    "correct_answer": "Error"
+  },
+  {
+    "title": "115. Package Import Execution Order",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "# getcracked/__init__.py\nprint(1, end=\"\")\n\n# getcracked/foo.py\nprint(2, end=\"\")\n\nimport getcracked.bar\n\nclass Stuff:\n    pass\n\ndef display() -> None:\n    stuff = Stuff()\n    print(getcracked.bar.do(stuff))\n\n# getcracked/bar.py\nprint(3, end=\"\")\n\nimport getcracked.foo\n\ndef do(stuff: getcracked.foo.Stuff) -> str:\n    return stuff.__class__.__name__\n\n# REPL\n>>> import getcracked",
+    "options": [
+      "1"
+    ],
+    "correct_answer": "1"
+  },
+  {
+    "title": "116. Integer Promotion with uint8_t",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\nint main() {\n    std::cout << \"Enter a number:\";\n\n    int x = 10;\n    uint8_t y;\n    std::cin >> y;\n\n    x *= y;\n    std::cout << x;\n\n    return 0;\n}",
+    "options": [
+      "490"
+    ],
+    "correct_answer": "490"
+  },
+  {
+    "title": "117. Template Copy Constructor with const Source",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "// Headers\n\ntemplate <typename T, size_t size>\nclass Fixed_vector {\n    private:\n        T m_vec[size];\n\n    public:\n        T* begin() { return m_vec; }\n        const T* begin() const { return m_vec; }\n        T* end() { return m_vec + size; }\n        const T* end() const { return m_vec + size; }\n        \n        Fixed_vector() {};\n\n        template <typename O, size_t O_size>\n        explicit Fixed_vector(const Fixed_vector<O, O_size>& other) {\n            std::cout << \"Copy\\n\";\n            std::copy(other.begin(), other.end(), begin());\n        }\n};\n\nint main() {\n    const Fixed_vector<int, 5> v1{};\n    Fixed_vector<int, 5> v2(v1);\n    // ...\n}",
+    "options": [
+      "The program fails to compile.",
+      "The program runs to completion, and \"Copy\" is printed.",
+      "The program contains undefined behavior.",
+      "The program runs to completion, but nothing gets printed."
+    ],
+    "correct_answer": "The program runs to completion, but nothing gets printed."
+  },
+  {
+    "title": "118. For-Else Loop Variable Scope",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "for i in range(2, 1):\n    print(i, end=\"\")\nelse:\n    print(i, end=\"\")",
+    "options": [
+      "NameError"
+    ],
+    "correct_answer": "NameError"
+  },
+  {
+    "title": "119. OLTP vs OLAP Database Systems",
+    "language": null,
+    "topic": null,
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "ETL and ELT",
+      "Datalake and Datawarehouse",
+      "OLTP and OLAP",
+      "SQL and NoSQL"
+    ],
+    "correct_answer": "OLTP and OLAP"
+  },
+  {
+    "title": "120. C++ Method Resolution Order",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": null,
+    "options": [
+      "protected, virtual, public, non-virtual",
+      "public, virtual, protected, non-virtual",
+      "virtual, non-virtual, public, protected",
+      "public, protected, virtual, non-virtual"
+    ],
+    "correct_answer": "public, virtual, protected, non-virtual"
+  },
+  {
+    "title": "121. String Multiplication with Negative Numbers",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "print( \"a\"  * -1 + \"b\" * 0 + \"c\" * 2)",
+    "options": [
+      "cc"
+    ],
+    "correct_answer": "cc"
+  },
+  {
+    "title": "122. String Literal Address Output",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main() {\n    std::cout << &\"Test\";\n}",
+    "options": [
+      "A memory address",
+      "Undefined behavior",
+      "0",
+      "Compilation error"
+    ],
+    "correct_answer": "A memory address"
+  },
+  {
+    "title": "123. Type Alias Const Placement",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "using int_ptr = int*;\nconst int_ptr foo; \nconst int* bar;    ",
+    "options": [
+      "foo is a pointer to const int, bar is a const pointer to int",
+      "foo is a const pointer to int, bar is a pointer to const int",
+      "foo and bar are const pointers to int",
+      "foo and bar are pointers to const int"
+    ],
+    "correct_answer": "foo is a const pointer to int, bar is a pointer to const int"
+  },
+  {
+    "title": "124. Python REPL Acronym",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "Read Evaluate Print Loop"
+    ],
+    "correct_answer": "Read Evaluate Print Loop"
+  },
+  {
+    "title": "125. Virtual vs Non-Virtual Method Calls",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nclass A {\npublic:\n  void f() { std::cout << \"A\"; }\n};\n\nstruct B : public A {\n  virtual void f() { std::cout << \"B\"; }\n};\n\nclass C : public B {\npublic:\n  void f() { std::cout << \"C\"; }\n};\n\nint main() {\n  A* o1 = new A;\n  A* o2 = new B;\n  B* o3 = new C;\n  \n  A a;\n  B b;\n  B c = *(new C);\n  \n  o1->f(); o2->f(); o3->f();\n  \n  a.f(); b.f(); c.f();\n  \n  return 0;\n}",
+    "options": [
+      "AACABB"
+    ],
+    "correct_answer": "AACABB"
+  },
+  {
+    "title": "126. std::unique with Vector Erase",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main() {\n    std::vector<int> v{2, 3, 6, 6, 5, 8, 6};\n    auto end = std::unique(std::begin(v), std::end(v));\n\n    v.erase(end, v.end());\n\n    for (int i : v) {\n        std::cout << i;\n    }\n}",
+    "options": [
+      "236586"
+    ],
+    "correct_answer": "236586"
+  },
+  {
+    "title": "127. Vector of String Word Count",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Hard",
+    "description": "std::vector<std::string>",
+    "options": [
+      "Quant",
+      "6"
+    ],
+    "correct_answer": "6"
+  },
+  {
+    "title": "128. C++ Programming Paradigm",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "General Purpose",
+      "Functional",
+      "Declarative",
+      "Object-Oriented"
+    ],
+    "correct_answer": "General Purpose"
+  },
+  {
+    "title": "129. Large String to Integer Conversion",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "with open(\"sample.txt\", \"r\") as f:\n    line = f.readline().rstrip(\"\\n\")\n    x = int(line)",
+    "options": [
+      "Yes, Python will set the number to sys.maxsize",
+      "No, Python limits string to integer conversion",
+      "Yes, Python allows for infinite numbers"
+    ],
+    "correct_answer": "No, Python limits string to integer conversion"
+  },
+  {
+    "title": "130. Union Size Calculation",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nunion storage {\n    int x;\n    char y;\n    char z[5]; \n};\n\nint main() {\n    std::cout << sizeof(storage);\n}",
+    "options": [
+      "8"
+    ],
+    "correct_answer": "8"
+  },
+  {
+    "title": "131. Multiple Union Member Initializers",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": "union storage {\n    int x_ = 1;\n    int y_ = 2;\n};",
+    "options": [
+      "Compilation error",
+      "1 and 2",
+      "Junk and 2",
+      "1 and Junk"
+    ],
+    "correct_answer": "Compilation error"
+  },
+  {
+    "title": "132. Small Object Optimization Explanation",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "Quant"
+    ],
+    "correct_answer": "SOO is when a class contains a fixed size internal buffer for small objects and a pointer for larger, heap-allocated objects."
+  },
+  {
+    "title": "133. Decltype with Assignment Expression",
+    "language": "Cpp",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": "// Headers\n\nint main() {\n int x { 3 };\n decltype((x = 4)) y = x;\n std::cout << x;\n\n return 0;\n}",
+    "options": [
+      "Undefined behavior",
+      "3",
+      "4",
+      "Compilation error"
+    ],
+    "correct_answer": "3"
+  },
+  {
+    "title": "134. PEP Acronym Meaning",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": null,
+    "description": null,
+    "options": [
+      "Python Error Prevention",
+      "Python Enhancement Proposal",
+      "Programming Enhancement Patch",
+      "Python Execution Protocol"
+    ],
+    "correct_answer": "Python Enhancement Proposal"
+  },
+  {
+    "title": "135. Last Python 2 Version",
+    "language": "Python",
+    "topic": "Language Knowledge",
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "2.7.18"
+    ],
+    "correct_answer": "2.7.18"
+  },
+  {
+    "title": "136. Trait Implementation for Closures",
+    "language": "Rust",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "pub trait Foo {\n    fn bar(&self, message: &[u8]);\n}\n\nimpl<F> Foo for F\nwhere\n    F: Fn(&[u8]),\n{\n    fn bar(&self, message: &[u8]) {\n        (self)(message)\n    }\n}\n\nfn call_bar<F: Foo>(f: F) {\n    f.bar(b\"Hello, world\");\n}\n\nfn main() {\n    call_bar(|msg| {\n        println!(\"{}\", std::str::from_utf8(msg).unwrap());\n    });\n}",
+    "options": [
+      "\"Hello World\" is printed to the screen",
+      "Compilation Error",
+      "Runtime Panic",
+      "Undefined Behavior"
+    ],
+    "correct_answer": "Compilation Error"
+  },
+  {
+    "title": "137. Casting Immutable Reference to Mutable Pointer",
+    "language": "Rust",
+    "topic": "Language Knowledge",
+    "difficulty": "Medium",
+    "description": "fn write_through_ptr(ptr: *mut usize) {\n    if ptr.is_null() { return; }\n    unsafe { *ptr = 5678 };\n}\n\nfn main() {\n    let x: usize = 1234;\n    \n    {\n        let y: &usize = &x;\n        let z: *mut usize = y as *const _ as *mut usize;\n        // safety: no one else has a reference to x, therefore this is safe\n        write_through_ptr(z);\n    }\n\n    println!(\"{}\", x);\n}",
+    "options": [
+      "Undefined Behavior",
+      "Compilation Error",
+      "\"5678\" is printed to the screen",
+      "\"1234\" is printed to the screen"
+    ],
+    "correct_answer": "Compilation Error"
+  },
+  {
+    "title": "138. Number Puzzle Answer",
+    "language": null,
+    "topic": null,
+    "difficulty": "Easy",
+    "description": null,
+    "options": [
+      "3"
+    ],
+    "correct_answer": "3"
+  },
+  {
+    "title": "139. Traceroute Missing Hops",
+    "language": null,
+    "topic": null,
+    "difficulty": "Hard",
+    "description": "traceroute",
+    "options": [
+      "ICMP replies are blocked by the transit network.",
+      "The traceroute tool miscomputed TTLs.",
+      "The network uses IP-in-IP tunneling between gateways",
+      "The routers all share the same IP address."
+    ],
+    "correct_answer": "The network uses IP-in-IP tunneling between gateways"
+  },
+  {
+    "title": "140. Ring Buffer Race Condition",
+    "language": "Cpp",
+    "topic": null,
+    "difficulty": "Easy",
+    "description": "// Headers\n\ntemplate <typename T, size_t Size>\nclass RingBuffer {\nprivate:\n    std::vector<T> buffer;\n    size_t head = 0;\n    size_t tail = 0;\n    bool full = false;\n\n    std::mutex mtx;\n\npublic:\n    RingBuffer() : buffer(Size) {}\n\n    bool empty() {\n        std::lock_guard<std::mutex> lock(mtx);\n        return (!full && head == tail);\n    }\n\n    bool push(const T &item) {\n        std::lock_guard<std::mutex> lock(mtx);\n\n        if (full) {\n            return false;  // buffer full\n        }\n\n        buffer[head] = item;\n        head = (head + 1) % Size;\n        full = (head == tail);\n        return true;\n    }\n\n    std::optional<T> pop() {\n        std::lock_guard<std::mutex> lock(mtx);\n\n        if (empty()) {\n            return std::nullopt;\n        }\n\n        auto val = buffer[tail];\n        full = false;\n        tail = (tail + 1) % Size;\n        return val;\n    }\n};\n\n// Example usage\nint main() {\n    RingBuffer<int, 5> rb;\n\n    // Producer thread\n    std::thread producer([&]() {\n        for (int i = 0; i < 1; i++) {\n            while (!rb.push(i)) {\n                std::this_thread::yield();\n            }\n            std::cout << \"Produced: \" << i;\n        }\n    });\n\n    // Consumer thread\n    std::thread consumer([&]() {\n        for (int i = 0; i < 1; i++) {\n            std::optional<int> val;\n            while (!(val = rb.pop())) {\n                std::this_thread::yield();\n            }\n            std::cout << \" Consumed: \" << *val << \" \";\n        }\n    });\n\n    producer.join();\n    consumer.join();\n}",
+    "options": [
+      "Defense",
+      "Produced: 1 Consumed: 1",
+      "Produced: 0 Consumed: 0 Produced: 1 Consumed: 1",
+      "This program results in a compilation error.",
+      "This program contains undefined behavior."
+    ],
+    "correct_answer": "This program contains undefined behavior."
+  },
+  {
