@@ -19,16 +19,49 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, Layers, Code, DollarSign, Cpu, Zap, Target, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { AuthButton } from "@/components/auth/AuthButton";
+import { AuthDialog } from "@/components/auth/AuthDialog";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push("/dashboard");
+    }
+  }, [user, loading, router]);
 
   const navLinks = [
     { href: "#topics", label: "Topics" },
     { href: "#practice", label: "Practice" },
     { href: "#pricing", label: "Pricing" },
   ];
+
+  const handleGetStarted = () => {
+    if (user) {
+      router.push("/dashboard");
+    } else {
+      setAuthDialogOpen(true);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-black">
@@ -48,7 +81,7 @@ export default function Home() {
                 {link.label}
               </a>
             ))}
-            <Button className="rounded-full" size="sm">
+            <Button className="rounded-full" size="sm" onClick={handleGetStarted}>
               Get started
             </Button>
           </div>
@@ -105,8 +138,15 @@ export default function Home() {
                   </div>
                 </a>
 
-                <div className="mt-6 space-y-2">
-                  <Button className="w-full rounded-full" size="lg" onClick={() => setOpen(false)}>
+                <div className="mt-6">
+                  <Button
+                    className="w-full rounded-full"
+                    size="lg"
+                    onClick={() => {
+                      setOpen(false);
+                      setAuthDialogOpen(true);
+                    }}
+                  >
                     Get started
                   </Button>
                 </div>
@@ -126,7 +166,7 @@ export default function Home() {
             Build a deep understanding of computer systems, operating systems, and performance-critical programming. 
             Practice hundreds of questions covering the fundamentals that matter.
           </p>
-          <Button className="mt-8 rounded-full" size="lg">
+          <Button className="mt-8 rounded-full" size="lg" onClick={handleGetStarted}>
             Start learning for free
           </Button>
         </div>
@@ -464,7 +504,11 @@ export default function Home() {
               </CardHeader>
 
               <CardContent className="space-y-6">
-                <Button className="w-full rounded-full bg-purple-600 hover:bg-purple-700">
+                <Button
+                  className="w-full rounded-full bg-purple-600 hover:bg-purple-700"
+                  size="lg"
+                  onClick={handleGetStarted}
+                >
                   Get started now
                 </Button>
 
@@ -522,6 +566,8 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      <AuthDialog open={authDialogOpen} onOpenChange={setAuthDialogOpen} />
     </div>
   );
 }
