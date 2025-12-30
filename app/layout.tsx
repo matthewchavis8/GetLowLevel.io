@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GetLowLevel.io",
-  description: "Master the low-level concepts",
+  title: "GetLowLevel.io - Master Low-Level Programming",
+  description: "Build deep understanding of operating systems, computer architecture, and systems programming. Practice hundreds of questions for free.",
 };
 
 export default function RootLayout({
