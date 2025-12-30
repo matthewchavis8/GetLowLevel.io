@@ -1,4 +1,15 @@
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default function Home() {
   return (
@@ -11,9 +22,9 @@ export default function Home() {
             <a href="#topics" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Topics</a>
             <a href="#practice" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Practice</a>
             <a href="#pricing" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Pricing</a>
-            <button className="rounded-full bg-black px-6 py-2 text-sm text-white dark:bg-white dark:text-black">
+            <Button className="rounded-full" size="sm">
               Get started
-            </button>
+            </Button>
           </div>
         </nav>
       </header>
@@ -28,9 +39,9 @@ export default function Home() {
             Build a deep understanding of computer systems, operating systems, and performance-critical programming. 
             Practice hundreds of questions covering the fundamentals that matter.
           </p>
-          <button className="mt-8 rounded-full bg-black px-8 py-3 text-base font-medium text-white dark:bg-white dark:text-black">
+          <Button className="mt-8 rounded-full" size="lg">
             Start learning for free
-          </button>
+          </Button>
         </div>
       </section>
 
@@ -46,45 +57,57 @@ export default function Home() {
           </div>
 
           <div className="mt-16 flex flex-wrap justify-center gap-4">
-            <div className="rounded-full bg-red-100 px-6 py-3 text-red-700 dark:bg-red-900/30 dark:text-red-300">
+            <Badge variant="secondary" className="bg-red-100 px-6 py-3 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300">
               Operating Systems
-            </div>
-            <div className="rounded-full bg-cyan-100 px-6 py-3 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300">
+            </Badge>
+            <Badge variant="secondary" className="bg-cyan-100 px-6 py-3 text-cyan-700 hover:bg-cyan-100 dark:bg-cyan-900/30 dark:text-cyan-300">
               Networking
-            </div>
-            <div className="rounded-full bg-pink-100 px-6 py-3 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300">
+            </Badge>
+            <Badge variant="secondary" className="bg-pink-100 px-6 py-3 text-pink-700 hover:bg-pink-100 dark:bg-pink-900/30 dark:text-pink-300">
               Memory Management
-            </div>
-            <div className="rounded-full bg-purple-100 px-6 py-3 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+            </Badge>
+            <Badge variant="secondary" className="bg-purple-100 px-6 py-3 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300">
               Computer Architecture
-            </div>
-            <div className="rounded-full bg-green-100 px-6 py-3 text-green-700 dark:bg-green-900/30 dark:text-green-300">
+            </Badge>
+            <Badge variant="secondary" className="bg-green-100 px-6 py-3 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300">
               Concurrency
-            </div>
-            <div className="rounded-full bg-orange-100 px-6 py-3 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
+            </Badge>
+            <Badge variant="secondary" className="bg-orange-100 px-6 py-3 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300">
               System Design
-            </div>
+            </Badge>
           </div>
 
           <div className="mt-20 grid gap-8 md:grid-cols-3">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-black">
-              <h3 className="text-xl font-semibold">Deep Fundamentals</h3>
-              <p className="mt-4 text-zinc-600 dark:text-zinc-400">
-                Go beyond surface-level knowledge. Understand how systems really work under the hood.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-black">
-              <h3 className="text-xl font-semibold">Real Interview Questions</h3>
-              <p className="mt-4 text-zinc-600 dark:text-zinc-400">
-                Practice questions from actual technical interviews at top tech companies and trading firms.
-              </p>
-            </div>
-            <div className="rounded-2xl border border-zinc-200 bg-white p-8 dark:border-zinc-800 dark:bg-black">
-              <h3 className="text-xl font-semibold">Performance Focused</h3>
-              <p className="mt-4 text-zinc-600 dark:text-zinc-400">
-                Learn to write fast, efficient code and understand the performance implications of your decisions.
-              </p>
-            </div>
+            <Card>
+              <CardHeader>
+                <CardTitle>Deep Fundamentals</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-zinc-600 dark:text-zinc-400">
+                  Go beyond surface-level knowledge. Understand how systems really work under the hood.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Real Interview Questions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-zinc-600 dark:text-zinc-400">
+                  Practice questions from actual technical interviews at top tech companies and trading firms.
+                </p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Performance Focused</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-zinc-600 dark:text-zinc-400">
+                  Learn to write fast, efficient code and understand the performance implications of your decisions.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -101,26 +124,32 @@ export default function Home() {
 
           <div className="mt-12 flex justify-center gap-6">
             {/* Python */}
-            <div className="flex flex-col items-center rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:scale-105 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-              <Image src="/PythonLogo.png" alt="PythonLogo" width={64} height={64} className="object-contain" />
-              <div className="mt-4 font-semibold">Python</div>
-            </div>
+            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
+              <CardContent className="flex flex-col items-center p-8">
+                <Image src="/PythonLogo.png" alt="Python" width={64} height={64} className="object-contain" />
+                <div className="mt-4 font-semibold">Python</div>
+              </CardContent>
+            </Card>
 
             {/* C++ */}
-            <div className="flex flex-col items-center rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:scale-105 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-              <Image src="/C++Logo.png" alt="C++" width={64} height={64} className="object-contain" />
-              <div className="mt-4 font-semibold">C++</div>
-            </div>
+            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
+              <CardContent className="flex flex-col items-center p-8">
+                <Image src="/C++Logo.png" alt="C++" width={64} height={64} className="object-contain" />
+                <div className="mt-4 font-semibold">C++</div>
+              </CardContent>
+            </Card>
 
             {/* Rust */}
-            <div className="flex flex-col items-center rounded-2xl border border-zinc-200 bg-white p-8 transition-all hover:scale-105 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-              <Image src="/RustLogo.png" alt="Rust" width={64} height={64} className="object-contain" />
-              <div className="mt-4 font-semibold">Rust</div>
-            </div>
+            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
+              <CardContent className="flex flex-col items-center p-8">
+                <Image src="/RustLogo.png" alt="Rust" width={64} height={64} className="object-contain" />
+                <div className="mt-4 font-semibold">Rust</div>
+              </CardContent>
+            </Card>
           </div>
 
-          <div className="mt-16 rounded-2xl border border-zinc-200 bg-zinc-50 p-8 dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="flex items-start gap-4">
+          <Card className="mt-16 bg-zinc-50 dark:bg-zinc-900">
+            <CardContent className="flex items-start gap-4 p-8">
               <div className="text-2xl">💡</div>
               <div>
                 <h3 className="text-lg font-semibold">Sample Question: Cache Line Behavior</h3>
@@ -128,8 +157,8 @@ export default function Home() {
                   What is the cache line size on most modern x86-64 processors, and why does false sharing occur when multiple threads write to different variables on the same cache line?
                 </p>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -144,54 +173,58 @@ export default function Home() {
           </div>
 
           <div className="mt-12 overflow-x-auto">
-            <table className="w-full border-collapse rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
-              <thead>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-zinc-500">Features</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold">GetLowLevel.io</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-zinc-400">LeetCode</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-zinc-400">HackerRank</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <td className="px-6 py-4 text-sm">Operating Systems</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                </tr>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <td className="px-6 py-4 text-sm">Computer Architecture</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                </tr>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <td className="px-6 py-4 text-sm">Concurrency & Threading</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                </tr>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <td className="px-6 py-4 text-sm">Systems Programming</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                  <td className="px-6 py-4 text-center text-red-600">✗</td>
-                </tr>
-                <tr className="border-b border-zinc-200 dark:border-zinc-800">
-                  <td className="px-6 py-4 text-sm">Data Structures & Algorithms</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 text-sm">Free Forever</td>
-                  <td className="px-6 py-4 text-center text-green-600">✓</td>
-                  <td className="px-6 py-4 text-center text-orange-600">Partial</td>
-                  <td className="px-6 py-4 text-center text-orange-600">Partial</td>
-                </tr>
-              </tbody>
-            </table>
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[250px]">Features</TableHead>
+                      <TableHead className="text-center">GetLowLevel.io</TableHead>
+                      <TableHead className="text-center text-zinc-400">LeetCode</TableHead>
+                      <TableHead className="text-center text-zinc-400">HackerRank</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className="font-medium">Operating Systems</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Computer Architecture</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Concurrency & Threading</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Systems Programming</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Data Structures & Algorithms</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="font-medium">Free Forever</TableCell>
+                      <TableCell className="text-center text-green-600">✓</TableCell>
+                      <TableCell className="text-center text-orange-600">Partial</TableCell>
+                      <TableCell className="text-center text-orange-600">Partial</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
@@ -207,46 +240,48 @@ export default function Home() {
           </div>
 
           <div className="mt-12 flex justify-center">
-            <div className="w-full max-w-md rounded-2xl border-2 border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 p-8 dark:from-purple-950/20 dark:to-pink-950/20">
-              <div className="text-center">
-                <div className="inline-block rounded-full bg-purple-600 px-4 py-1 text-sm font-semibold text-white">
+            <Card className="w-full max-w-md border-2 border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+              <CardHeader className="text-center">
+                <Badge className="mx-auto w-fit bg-purple-600 text-white hover:bg-purple-600">
                   Forever Free
-                </div>
-                <div className="mt-6 text-6xl font-bold">$0</div>
-                <div className="mt-2 text-zinc-600 dark:text-zinc-400">No credit card required</div>
-              </div>
+                </Badge>
+                <CardTitle className="mt-6 text-6xl font-bold">$0</CardTitle>
+                <CardDescription>No credit card required</CardDescription>
+              </CardHeader>
 
-              <button className="mt-8 w-full rounded-full bg-purple-600 py-3 font-semibold text-white hover:bg-purple-700">
-                Get started now
-              </button>
+              <CardContent className="space-y-6">
+                <Button className="w-full rounded-full bg-purple-600 hover:bg-purple-700">
+                  Get started now
+                </Button>
 
-              <ul className="mt-8 space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Unlimited access to all questions</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Operating systems deep dives</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Computer architecture concepts</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Concurrency and threading</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Performance optimization techniques</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600">✓</span>
-                  <span className="text-sm">Community support</span>
-                </li>
-              </ul>
-            </div>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Unlimited access to all questions</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Operating systems deep dives</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Computer architecture concepts</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Concurrency and threading</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Performance optimization techniques</span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <span className="text-green-600">✓</span>
+                    <span className="text-sm">Community support</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
