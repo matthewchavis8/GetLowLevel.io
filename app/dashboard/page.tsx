@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { logout } from "@/lib/firebase/auth";
+import Image from "next/image";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -33,7 +34,10 @@ export default function Dashboard() {
     <div className="min-h-screen bg-white dark:bg-black">
       <header className="border-b border-zinc-200 dark:border-zinc-800">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="text-2xl font-bold">GetLowLevel.io</div>
+          <div className="flex items-center gap-3">
+            <Image src="/Soc.png" alt="GetLowLevel.io" width={56} height={56} className="object-contain" />
+            <span className="text-2xl font-bold">GetLowLevel.io</span>
+          </div>
           <div className="flex items-center gap-4">
             <span className="hidden text-sm md:block">{user.displayName || user.email}</span>
             <Button

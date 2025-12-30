@@ -68,7 +68,10 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-zinc-200 dark:border-zinc-800">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="text-2xl font-bold">GetLowLevel.io</div>
+          <div className="flex items-center gap-3">
+            <Image src="/Soc.png" alt="GetLowLevel.io" width={56} height={56} className="object-contain" />
+            <span className="text-2xl font-bold">GetLowLevel.io</span>
+          </div>
           
           {/* Desktop Navigation */}
           <div className="hidden items-center gap-8 md:flex">
@@ -94,7 +97,10 @@ export default function Home() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <SheetTitle className="text-2xl font-bold">GetLowLevel.io</SheetTitle>
+              <SheetTitle className="flex items-center gap-3 text-2xl font-bold">
+                <Image src="/Soc.png" alt="GetLowLevel.io" width={48} height={48} className="object-contain" />
+                <span>GetLowLevel.io</span>
+              </SheetTitle>
               <div className="flex flex-col gap-2 mt-8">
                 <a
                   href="#topics"
@@ -549,7 +555,10 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
             <div className="text-center md:text-left">
-              <div className="text-xl font-bold">GetLowLevel.io</div>
+              <div className="flex items-center justify-center gap-2 md:justify-start">
+                <Image src="/Soc.png" alt="GetLowLevel.io" width={40} height={40} className="object-contain" />
+                <span className="text-xl font-bold">GetLowLevel.io</span>
+              </div>
               <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
                 Master the low-level concepts that matter.
               </p>
