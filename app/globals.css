@@ -1,26 +1,118 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-background: #050505;
+  --color-surface: #0A0A0A;
+  --color-card: #111111;
+  --color-border: #222222;
+  --color-primary: #FFFFFF;
+  --color-muted: #888888;
+  --color-accent: #22c55e;
+  --color-accent-glow: rgba(34, 197, 94, 0.15);
+  --font-family-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-family-mono: var(--font-jetbrains-mono), 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: #d1d5db;
+  font-family: var(--font-inter), sans-serif;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* Custom scrollbar for code editor */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #111;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #444;
+}
+
+/* Smooth fade for glass effects */
+.glass-card {
+  background: rgba(17, 17, 17, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Checkbox styling override */
+input[type="radio"]:checked + div {
+  border-color: #22c55e;
+  background-color: rgba(34, 197, 94, 0.05);
+}
+
+input[type="radio"]:checked + div .check-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Accordion transition */
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Spline viewer styling */
+spline-viewer {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Hide Spline branding/watermark - multiple methods to ensure it's hidden */
+spline-viewer::part(logo),
+spline-viewer::part(branding),
+spline-viewer a[href*="spline"],
+spline-viewer button,
+spline-viewer a {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Hide any elements with "Built with Spline" text or Spline branding */
+spline-viewer * {
+  pointer-events: none;
+}
+
+spline-viewer canvas {
+  pointer-events: auto;
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+::selection {
+  background-color: rgba(34, 197, 94, 0.3);
+  color: rgb(220, 252, 231);
 }
