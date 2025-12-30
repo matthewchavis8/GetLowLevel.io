@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,22 +12,107 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Menu, Layers, Code, DollarSign, Cpu, Zap, Target, Check, X } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
+  const navLinks = [
+    { href: "#topics", label: "Topics" },
+    { href: "#practice", label: "Practice" },
+    { href: "#pricing", label: "Pricing" },
+  ];
+
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
       <header className="border-b border-zinc-200 dark:border-zinc-800">
         <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="text-2xl font-bold">GetLowLevel.io</div>
-          <div className="flex items-center gap-8">
-            <a href="#topics" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Topics</a>
-            <a href="#practice" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Practice</a>
-            <a href="#pricing" className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400">Pricing</a>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden items-center gap-8 md:flex">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400"
+              >
+                {link.label}
+              </a>
+            ))}
             <Button className="rounded-full" size="sm">
               Get started
             </Button>
           </div>
+
+          {/* Mobile Navigation */}
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild className="md:hidden">
+              <Button variant="ghost" size="icon">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <SheetTitle className="text-2xl font-bold">GetLowLevel.io</SheetTitle>
+              <div className="flex flex-col gap-2 mt-8">
+                <a
+                  href="#topics"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                    <Layers className="h-5 w-5 text-red-600 dark:text-red-400" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Topics</div>
+                    <div className="text-sm text-zinc-500">Core concepts</div>
+                  </div>
+                </a>
+                
+                <a
+                  href="#practice"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
+                    <Code className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Practice</div>
+                    <div className="text-sm text-zinc-500">Start coding</div>
+                  </div>
+                </a>
+                
+                <a
+                  href="#pricing"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                    <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <div className="font-semibold">Pricing</div>
+                    <div className="text-sm text-zinc-500">Forever free</div>
+                  </div>
+                </a>
+
+                <div className="mt-6 space-y-2">
+                  <Button className="w-full rounded-full" size="lg" onClick={() => setOpen(false)}>
+                    Get started
+                  </Button>
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </nav>
       </header>
 
@@ -78,32 +165,46 @@ export default function Home() {
           </div>
 
           <div className="mt-20 grid gap-8 md:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle>Deep Fundamentals</CardTitle>
+            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-50 opacity-50 dark:from-blue-950/20 dark:to-cyan-950/20" />
+              <CardHeader className="relative">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
+                  <Cpu className="h-7 w-7 text-white" />
+                </div>
+                <CardTitle className="text-2xl">Deep Fundamentals</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-zinc-600 dark:text-zinc-400">
+              <CardContent className="relative">
+                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   Go beyond surface-level knowledge. Understand how systems really work under the hood.
                 </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Real Interview Questions</CardTitle>
+
+            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 opacity-50 dark:from-purple-950/20 dark:to-pink-950/20" />
+              <CardHeader className="relative">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
+                  <Target className="h-7 w-7 text-white" />
+                </div>
+                <CardTitle className="text-2xl">Real Interview Questions</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-zinc-600 dark:text-zinc-400">
+              <CardContent className="relative">
+                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   Practice questions from actual technical interviews at top tech companies and trading firms.
                 </p>
               </CardContent>
             </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle>Performance Focused</CardTitle>
+
+            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-red-50 opacity-50 dark:from-orange-950/20 dark:to-red-950/20" />
+              <CardHeader className="relative">
+                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 shadow-lg">
+                  <Zap className="h-7 w-7 text-white" />
+                </div>
+                <CardTitle className="text-2xl">Performance Focused</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-zinc-600 dark:text-zinc-400">
+              <CardContent className="relative">
+                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
                   Learn to write fast, efficient code and understand the performance implications of your decisions.
                 </p>
               </CardContent>
@@ -173,53 +274,166 @@ export default function Home() {
           </div>
 
           <div className="mt-12 overflow-x-auto">
-            <Card>
+            <Card className="overflow-hidden border-2">
               <CardContent className="p-0">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[250px]">Features</TableHead>
-                      <TableHead className="text-center">GetLowLevel.io</TableHead>
-                      <TableHead className="text-center text-zinc-400">LeetCode</TableHead>
-                      <TableHead className="text-center text-zinc-400">HackerRank</TableHead>
+                    <TableRow className="bg-gradient-to-r from-zinc-50 to-zinc-100 hover:from-zinc-50 hover:to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 dark:hover:from-zinc-900 dark:hover:to-zinc-800">
+                      <TableHead className="w-[250px] py-6 text-base font-bold">Features</TableHead>
+                      <TableHead className="py-6 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="text-base font-bold text-foreground">GetLowLevel.io</div>
+              
+                        </div>
+                      </TableHead>
+                      <TableHead className="py-6 text-center text-zinc-500 dark:text-zinc-400">
+                        <div className="text-base font-semibold">LeetCode</div>
+                      </TableHead>
+                      <TableHead className="py-6 text-center text-zinc-500 dark:text-zinc-400">
+                        <div className="text-base font-semibold">HackerRank</div>
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">Operating Systems</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Operating Systems</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Computer Architecture</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Computer Architecture</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Concurrency & Threading</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Concurrency & Threading</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Systems Programming</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
-                      <TableCell className="text-center text-red-600">✗</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Systems Programming</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
+                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Data Structures & Algorithms</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Data Structures & Algorithms</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell className="font-medium">Free Forever</TableCell>
-                      <TableCell className="text-center text-green-600">✓</TableCell>
-                      <TableCell className="text-center text-orange-600">Partial</TableCell>
-                      <TableCell className="text-center text-orange-600">Partial</TableCell>
+                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                      <TableCell className="py-5 font-medium text-base">Free Forever</TableCell>
+                      <TableCell className="py-5 text-center">
+                        <div className="flex justify-center">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400">
+                          Partial
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="py-5 text-center">
+                        <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400">
+                          Partial
+                        </Badge>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
