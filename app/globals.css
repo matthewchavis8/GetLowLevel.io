@@ -88,6 +88,33 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.light {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #22c55e;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #94a3b8;
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #ec4899;
+  --color-surface: #ffffff;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -132,9 +159,51 @@
 }
 
 body {
-  background: var(--color-background);
-  color: #d1d5db;
+  background: var(--background);
+  color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.light body {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.light .text-gray-300 {
+  color: #475569;
+}
+
+.light .text-gray-400 {
+  color: #64748b;
+}
+
+.light .text-gray-500 {
+  color: #64748b;
+}
+
+.light .text-white {
+  color: #0f172a;
+}
+
+.light .bg-background {
+  background-color: #f8fafc;
+}
+
+.light .bg-card {
+  background-color: #ffffff;
+}
+
+
+.light nav {
+  background-color: rgba(248, 250, 252, 0.8);
+  backdrop-filter: blur(12px);
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid #e2e8f0;
 }
 
 @keyframes fadeInUp {
