@@ -10,9 +10,13 @@ import { AuthDialog } from "@/components/auth/AuthDialog";
 export default function HomePage() {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const { user, loading } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
+  
+  // Correct answer is option 2 (index 1): [[0, 0, 0], [0, 1, 2], [0, 2, 4]]
+  const correctAnswerIndex = 1;
 
   useEffect(() => {
     if (!loading && user) {
@@ -249,6 +253,7 @@ export default function HomePage() {
           <div className={`absolute inset-0 ${theme === 'light' ? 'bg-gradient-to-t from-[#f8fafc] via-[#f8fafc]/70 to-transparent' : 'bg-gradient-to-t from-background via-background/50 to-transparent'}`} />
         </div>
         <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          {/* Hero Title - Always visible */}
           <h1 className={`md:text-7xl leading-[1.1] text-5xl font-semibold tracking-tight mb-6 drop-shadow-2xl ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>
             Master the fundamentals
             <br />
@@ -258,8 +263,7 @@ export default function HomePage() {
           </h1>
 
           <p className={`text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed ${theme === 'light' ? 'text-slate-600' : 'text-gray-400 drop-shadow-md'}`}>
-            Practice real interview questions that expose how languages, memory, and systems actually behave — not toy
-            problems.
+            Practice interview questions that reveal how languages, memory, and systems actually move not the sandboxed puzzles everyone forgets after.
           </p>
 
           {/* Language Icons */}
@@ -368,63 +372,129 @@ export default function HomePage() {
               <div className={`p-6 md:p-8 backdrop-blur-md flex flex-col justify-center ${theme === 'light' ? 'bg-white' : 'bg-surface/80'}`}>
                 <h4 className={`text-sm font-medium uppercase tracking-wider mb-6 ${theme === 'light' ? 'text-slate-600' : 'text-gray-500'}`}>Select Answer</h4>
 
-                <div className="space-y-3">
-                  <label className="cursor-pointer group block relative">
-                    <input type="radio" name="preview-q" className="peer sr-only" />
-                    <div className={`p-4 rounded-xl border transition-all flex items-center justify-between ${theme === 'light' ? 'border-slate-200 bg-slate-50 hover:border-slate-300' : 'border-white/10 bg-card hover:border-white/20'}`}>
-                      <code className={`text-sm font-mono ${theme === 'light' ? 'text-slate-700' : 'text-gray-300'}`}>
-                        [[0, 1, 2], [0, 1, 2], [0, 1, 2]]
-                      </code>
-                      <div className={`w-5 h-5 rounded-full border ${theme === 'light' ? 'border-slate-300' : 'border-gray-600'} peer-checked:border-green-500`} />
-                    </div>
-                  </label>
+                <div className="space-y-3" role="radiogroup" aria-label="Select an answer">
+                  {[
+                    { value: 0, text: '[[0, 1, 2], [0, 1, 2], [0, 1, 2]]' },
+                    { value: 1, text: '[[0, 0, 0], [0, 1, 2], [0, 2, 4]]' },
+                    { value: 2, text: '[[0, 0, 0], [1, 1, 1], [2, 2, 2]]' },
+                    { value: 3, text: 'IndexError: list assignment index out of range' },
+                  ].map((option, index) => {
+                    const isSelected = selectedAnswer === index;
+                    const isCorrect = index === correctAnswerIndex;
+                    
+                    // Show feedback: selected incorrect = red, correct answer = green (when wrong is selected)
+                    const isIncorrectSelected = isSelected && !isCorrect;
+                    const showCorrectAnswer = selectedAnswer !== null && isCorrect && selectedAnswer !== correctAnswerIndex;
+                    const isCorrectSelected = isSelected && isCorrect;
+                    
+                    // Determine border and background colors
+                    // Priority: incorrect selected (red) > correct selected (green) > show correct answer (green) > default
+                    let borderColor = theme === 'light' ? 'border-slate-200' : 'border-white/10';
+                    let bgColor = theme === 'light' ? 'bg-slate-50' : 'bg-card';
+                    
+                    if (isIncorrectSelected) {
+                      // Wrong answer selected - light red background (#FEE2E2 / bg-red-100)
+                      borderColor = 'border-red-500';
+                      bgColor = theme === 'light' ? 'bg-red-100' : 'bg-red-500/10';
+                    } else if (isCorrectSelected) {
+                      // Correct answer selected - green
+                      borderColor = 'border-green-500';
+                      bgColor = theme === 'light' ? 'bg-green-50' : 'bg-green-500/10';
+                    } else if (showCorrectAnswer) {
+                      // Show correct answer in green when wrong answer is selected
+                      borderColor = 'border-green-500';
+                      bgColor = theme === 'light' ? 'bg-green-50' : 'bg-green-500/10';
+                    } else if (isSelected) {
+                      // Fallback for any other selected state
+                      borderColor = theme === 'light' ? 'border-slate-400' : 'border-white/30';
+                    }
 
-                  <label className="cursor-pointer group block relative">
-                    <input type="radio" name="preview-q" className="peer sr-only" defaultChecked />
-                    <div className={`p-4 rounded-xl border transition-all flex items-center justify-between ${theme === 'light' ? 'border-slate-200 bg-slate-50 hover:border-slate-300' : 'border-white/10 bg-card hover:border-white/20'}`}>
-                      <code className={`text-sm font-mono ${theme === 'light' ? 'text-slate-700' : 'text-gray-300'}`}>
-                        [[0, 0, 0], [0, 1, 2], [0, 2, 4]]
-                      </code>
-                      <div className="w-5 h-5 flex items-center justify-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-4 h-4 text-green-500 opacity-0 transition-all transform scale-75 peer-checked:opacity-100 peer-checked:scale-100"
+                    return (
+                      <label
+                        key={index}
+                        className="cursor-pointer group block relative"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setSelectedAnswer(index);
+                          }
+                        }}
+                        tabIndex={0}
+                        role="radio"
+                        aria-checked={isSelected}
+                        aria-label={`Option ${String.fromCharCode(65 + index)}: ${option.text}`}
+                      >
+                        <input
+                          type="radio"
+                          name="preview-q"
+                          className="sr-only"
+                          checked={isSelected}
+                          onChange={() => setSelectedAnswer(index)}
+                          tabIndex={-1}
+                        />
+                        <div 
+                          className={`p-4 rounded-xl border transition-all flex items-center justify-between ${borderColor} ${bgColor} ${!isSelected && !isIncorrectSelected && !showCorrectAnswer && !isCorrectSelected && (theme === 'light' ? 'hover:border-slate-300' : 'hover:border-white/20')}`}
+                          style={isIncorrectSelected ? { 
+                            borderColor: '#ef4444',
+                            backgroundColor: theme === 'light' ? '#FEE2E2' : 'rgba(239, 68, 68, 0.1)'
+                          } : undefined}
                         >
-                          <path d="M20 6 9 17l-5-5" />
-                        </svg>
-                      </div>
-                    </div>
-                  </label>
-
-                  <label className="cursor-pointer group block relative">
-                    <input type="radio" name="preview-q" className="peer sr-only" />
-                    <div className={`p-4 rounded-xl border transition-all flex items-center justify-between ${theme === 'light' ? 'border-slate-200 bg-slate-50 hover:border-slate-300' : 'border-white/10 bg-card hover:border-white/20'}`}>
-                      <code className={`text-sm font-mono ${theme === 'light' ? 'text-slate-700' : 'text-gray-300'}`}>
-                        [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
-                      </code>
-                      <div className={`w-5 h-5 rounded-full border ${theme === 'light' ? 'border-slate-300' : 'border-gray-600'}`} />
-                    </div>
-                  </label>
-
-                  <label className="cursor-pointer group block relative">
-                    <input type="radio" name="preview-q" className="peer sr-only" />
-                    <div className={`p-4 rounded-xl border transition-all flex items-center justify-between ${theme === 'light' ? 'border-slate-200 bg-slate-50 hover:border-slate-300' : 'border-white/10 bg-card hover:border-white/20'}`}>
-                      <code className={`text-sm font-mono ${theme === 'light' ? 'text-slate-700' : 'text-gray-300'}`}>IndexError: list assignment index out of range</code>
-                      <div className={`w-5 h-5 rounded-full border ${theme === 'light' ? 'border-slate-300' : 'border-gray-600'}`} />
-                    </div>
-                  </label>
+                          <code className={`text-sm font-mono ${theme === 'light' ? 'text-slate-700' : 'text-gray-300'}`}>
+                            {option.text}
+                          </code>
+                          <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all ${
+                            isSelected
+                              ? isCorrect
+                                ? 'border-green-500 bg-green-500'
+                                : 'border-red-500 bg-red-500'
+                              : showCorrectAnswer
+                              ? 'border-green-500 bg-green-500'
+                              : theme === 'light'
+                              ? 'border-slate-300'
+                              : 'border-gray-600'
+                          }`}>
+                            {(isSelected || showCorrectAnswer) && (
+                              <>
+                                {showCorrectAnswer && !isSelected ? (
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="white"
+                                    strokeWidth="3"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="w-3 h-3"
+                                  >
+                                    <path d="M20 6 9 17l-5-5" />
+                                  </svg>
+                                ) : (
+                                  <div className="w-2.5 h-2.5 rounded-full bg-white" />
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Feedback Banner at bottom - Shows when incorrect answer is selected */}
+          {selectedAnswer !== null && selectedAnswer !== correctAnswerIndex && (
+            <div className="mt-8 animate-fade-in-up">
+              <div className="bg-red-500/20 border border-red-500/50 rounded-xl p-6 backdrop-blur-sm text-center">
+                <p className={`text-lg md:text-xl font-semibold ${theme === 'light' ? 'text-red-800' : 'text-red-300'}`}>
+                  You're not cooked yet, get low level, and rewrite the code that writes you.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -507,14 +577,26 @@ export default function HomePage() {
             <div className={`p-8 rounded-2xl backdrop-blur-sm flex flex-col justify-between overflow-hidden ${theme === 'light' ? 'bg-slate-50 border border-slate-200' : 'bg-card/50 border border-white/5'}`}>
               <h3 className={`text-xl font-semibold mb-6 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>Real Outcomes</h3>
 
-              <div className="bg-white text-black p-4 rounded-xl shadow-lg transform rotate-2 translate-y-2 transition-transform duration-300">
+              <div className={`${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'} rounded-xl p-4 shadow-lg transform rotate-2 translate-y-2 transition-all duration-300 hover:scale-[1.02]`}>
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
-                    <span className="text-white font-bold text-xs">G</span>
+                  {/* Outlook Logo */}
+                  <div className="w-10 h-10 shrink-0 flex items-center justify-center rounded-lg">
+                    <Image 
+                      src="/outlook-logo.png" 
+                      alt="Outlook" 
+                      width={40} 
+                      height={40} 
+                      className="object-contain transition-all duration-300"
+                      style={{
+                        filter: theme === 'light' 
+                          ? 'none' 
+                          : 'brightness(1.25) contrast(1.1) saturate(1.1)'
+                      }}
+                    />
                   </div>
-                  <div>
-                    <div className="text-sm font-bold">Offer Letter: Senior Systems Eng</div>
-                    <div className="text-xs text-gray-600 mt-1">We are pleased to offer you the position...</div>
+                  <div className="flex-1">
+                    <div className={`text-sm font-semibold ${theme === 'light' ? 'text-gray-900' : 'text-white'}`}>You are hired!</div>
+                    <div className={`text-xs mt-1 ${theme === 'light' ? 'text-gray-700' : 'text-gray-200'}`}>Congratulations on your new job!</div>
                   </div>
                 </div>
               </div>
