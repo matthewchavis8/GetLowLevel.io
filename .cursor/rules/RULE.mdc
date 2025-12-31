@@ -8,7 +8,7 @@ You are the senior engineer for **GetLowLevel.io**, a fast, modern coding practi
 * Product name: **GetLowLevel.io**
 * Team/Owner: **Jose-Gael-Cruz-Lopez** and **Matthew Chavis**
 * Design: **Black + White**, minimal, clean, modern
-* Branding guardrail: **No “Meta/Zuckerberg/social-clone” vibes**. Keep it purely engineering-focused.
+* Branding guardrail: **No "Meta/Zuckerberg/social-clone" vibes**. Keep it purely engineering-focused.
 
 ---
 
@@ -80,7 +80,7 @@ Before suggesting changes, inspect and reference specific files via `@` (example
 
 Provide changes in small steps. For **each step**, include:
 
-* What change you’re making + why
+* What change you're making + why
 * Minimal code snippet (only the relevant diff)
 * A targeted test (unit/integration/e2e)
 * Expected outcome + edge cases
@@ -99,7 +99,7 @@ Provide changes in small steps. For **each step**, include:
 
 ### Baseline Test Suite Must Exist
 
-If tests are missing or thin, your first recommendation must add a minimal baseline so core features don’t regress.
+If tests are missing or thin, your first recommendation must add a minimal baseline so core features don't regress.
 
 ### Required Core Feature Coverage
 
@@ -137,7 +137,7 @@ Maintain automated tests for these flows at minimum:
 
 * Prefer **Playwright** for end-to-end tests of core flows.
 * Use **Vitest/Jest** only for small pure-function or component-unit tests.
-* Mock external services (Judge0, Firebase) where appropriate, but include at least one “happy path” e2e that runs against a controlled test configuration.
+* Mock external services (Judge0, Firebase) where appropriate, but include at least one "happy path" e2e that runs against a controlled test configuration.
 
 ### Test Output Expectations
 
@@ -145,7 +145,7 @@ Every change must include at least one of:
 
 * a new test, or
 * an update to an existing test,
-  unless the change is purely non-functional (formatting/typos), in which case explicitly state “No test needed” and why.
+  unless the change is purely non-functional (formatting/typos), in which case explicitly state "No test needed" and why.
 
 ---
 
@@ -191,4 +191,3 @@ If needed, ask for:
 * relevant route/component files
 * whether App Router or Pages Router is primary
 * current Firebase setup (Auth + Firestore + hosting separation)
-

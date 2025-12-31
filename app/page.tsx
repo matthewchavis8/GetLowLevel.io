@@ -1,32 +1,12 @@
-"use client";
+'use client';
 
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Menu, Layers, Code, DollarSign, Cpu, Zap, Target, Check, X } from "lucide-react";
-import { useState, useEffect } from "react";
-import { AuthButton } from "@/components/auth/AuthButton";
-import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import { AuthDialog } from "@/components/auth/AuthDialog";
 
-export default function Home() {
-  const [open, setOpen] = useState(false);
+export default function HomePage() {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -37,11 +17,44 @@ export default function Home() {
     }
   }, [user, loading, router]);
 
-  const navLinks = [
-    { href: "#topics", label: "Topics" },
-    { href: "#practice", label: "Practice" },
-    { href: "#pricing", label: "Pricing" },
-  ];
+  useEffect(() => {
+    const hideSplineBranding = () => {
+      const splineViewers = document.querySelectorAll('spline-viewer');
+      splineViewers.forEach((splineViewer) => {
+        const links = splineViewer.querySelectorAll('a, button');
+        links.forEach((el) => {
+          (el as HTMLElement).style.display = 'none';
+          (el as HTMLElement).style.visibility = 'hidden';
+          (el as HTMLElement).style.opacity = '0';
+        });
+
+        try {
+          const shadowRoot = splineViewer.shadowRoot;
+          if (shadowRoot) {
+            const shadowLinks = shadowRoot.querySelectorAll('a, button');
+            shadowLinks.forEach((el) => {
+              (el as HTMLElement).style.display = 'none';
+              (el as HTMLElement).style.visibility = 'hidden';
+              (el as HTMLElement).style.opacity = '0';
+            });
+          }
+        } catch (e) {
+          // Shadow DOM might not be accessible
+        }
+      });
+    };
+
+    hideSplineBranding();
+    const timeout = setTimeout(hideSplineBranding, 1000);
+    const timeout2 = setTimeout(hideSplineBranding, 3000);
+    const timeout3 = setTimeout(hideSplineBranding, 5000);
+
+    return () => {
+      clearTimeout(timeout);
+      clearTimeout(timeout2);
+      clearTimeout(timeout3);
+    };
+  }, []);
 
   const handleGetStarted = () => {
     if (user) {
@@ -53,8 +66,8 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-white dark:bg-black">
-        <div className="text-lg">Loading...</div>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-lg text-gray-300">Loading...</div>
       </div>
     );
   }
@@ -64,514 +77,689 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-black">
-      {/* Header */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800">
-        <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <div className="bg-background text-gray-300 font-sans antialiased selection:bg-green-900 selection:text-green-100 relative min-h-screen">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-background/70 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/Soc.png" alt="GetLowLevel.io" width={56} height={56} className="object-contain" />
-            <span className="text-2xl font-bold">GetLowLevel.io</span>
+            <Image src="/Soc.png" alt="GetLowLevel.io" width={40} height={40} className="object-contain" />
+            <span className="font-semibold text-white tracking-tight">GetLowLevel</span>
           </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm hover:text-zinc-600 dark:hover:text-zinc-400"
+
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a href="#leaderboard" className="hover:text-white transition-colors">
+              Leaderboard
+            </a>
+            <a href="#practice" className="hover:text-white transition-colors">
+              Practice
+            </a>
+            <a href="#contact" className="hover:text-white transition-colors">
+              Contact
+            </a>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleGetStarted}
+              className="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-gray-200 transition-colors text-sm"
+            >
+              Join Now
+            </button>
+            <a
+              href="https://github.com"
+              target="_blank"
+              rel="noreferrer"
+              className="text-gray-400 hover:text-white transition-colors hidden md:block"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
               >
-                {link.label}
-              </a>
-            ))}
-            <Button className="rounded-full" size="sm" onClick={handleGetStarted}>
-              Get started
-            </Button>
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+            </a>
           </div>
-
-          {/* Mobile Navigation */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <SheetTitle className="flex items-center gap-3 text-2xl font-bold">
-                <Image src="/Soc.png" alt="GetLowLevel.io" width={48} height={48} className="object-contain" />
-                <span>GetLowLevel.io</span>
-              </SheetTitle>
-              <div className="flex flex-col gap-2 mt-8">
-                <a
-                  href="#topics"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                    <Layers className="h-5 w-5 text-red-600 dark:text-red-400" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">Topics</div>
-                    <div className="text-sm text-zinc-500">Core concepts</div>
-                  </div>
-                </a>
-                
-                <a
-                  href="#practice"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 dark:bg-purple-900/30">
-                    <Code className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">Practice</div>
-                    <div className="text-sm text-zinc-500">Start coding</div>
-                  </div>
-                </a>
-                
-                <a
-                  href="#pricing"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-4 rounded-lg p-4 text-left transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-                >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                    <DollarSign className="h-5 w-5 text-green-600 dark:text-green-400" />
-                  </div>
-                  <div>
-                    <div className="font-semibold">Pricing</div>
-                    <div className="text-sm text-zinc-500">Forever free</div>
-                  </div>
-                </a>
-
-                <div className="mt-6">
-                  <Button
-                    className="w-full rounded-full"
-                    size="lg"
-                    onClick={() => {
-                      setOpen(false);
-                      setAuthDialogOpen(true);
-                    }}
-                  >
-                    Get started
-                  </Button>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </nav>
-      </header>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <section className="mx-auto max-w-7xl px-6 py-24 text-center">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-            Master low-level programming concepts
+      <section className="md:pt-48 md:pb-32 overflow-hidden pt-32 pb-20 relative">
+        <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
+          {/* @ts-expect-error - spline-viewer is a web component */}
+          <spline-viewer 
+            url="https://prod.spline.design/yEyS56E8hH1AOTFI/scene.splinecode"
+            style={{ width: '100%', height: '100%' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        </div>
+        <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
+          <h1 className="md:text-7xl leading-[1.1] text-5xl font-semibold text-white tracking-tight mb-6 drop-shadow-2xl">
+            Master the fundamentals
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-br from-gray-200 to-gray-500">
+              interviews actually test.
+            </span>
           </h1>
-          <p className="mt-6 text-xl text-zinc-600 dark:text-zinc-400">
-            Build a deep understanding of computer systems, operating systems, and performance-critical programming. 
-            Practice hundreds of questions covering the fundamentals that matter.
+
+          <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed drop-shadow-md">
+            Practice real interview questions that expose how languages, memory, and systems actually behave — not toy
+            problems.
           </p>
-          <Button className="mt-8 rounded-full" size="lg" onClick={handleGetStarted}>
-            Start learning for free
-          </Button>
-        </div>
-      </section>
 
-      {/* Topics Section */}
-      <section id="topics" className="bg-zinc-50 py-24 dark:bg-zinc-900">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold">Why GetLowLevel.io?</h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-              In the age of AI, deep systems knowledge will be the differentiator. 
-              Stand out from the competition!
-            </p>
-          </div>
-
-          <div className="mt-16 flex flex-wrap justify-center gap-4">
-            <Badge variant="secondary" className="bg-red-100 px-6 py-3 text-red-700 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-300">
-              Operating Systems
-            </Badge>
-            <Badge variant="secondary" className="bg-cyan-100 px-6 py-3 text-cyan-700 hover:bg-cyan-100 dark:bg-cyan-900/30 dark:text-cyan-300">
-              Networking
-            </Badge>
-            <Badge variant="secondary" className="bg-pink-100 px-6 py-3 text-pink-700 hover:bg-pink-100 dark:bg-pink-900/30 dark:text-pink-300">
-              Memory Management
-            </Badge>
-            <Badge variant="secondary" className="bg-purple-100 px-6 py-3 text-purple-700 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300">
-              Computer Architecture
-            </Badge>
-            <Badge variant="secondary" className="bg-green-100 px-6 py-3 text-green-700 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300">
-              Concurrency
-            </Badge>
-            <Badge variant="secondary" className="bg-orange-100 px-6 py-3 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300">
-              System Design
-            </Badge>
-          </div>
-
-          <div className="mt-20 grid gap-8 md:grid-cols-3">
-            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-cyan-50 opacity-50 dark:from-blue-950/20 dark:to-cyan-950/20" />
-              <CardHeader className="relative">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-                  <Cpu className="h-7 w-7 text-white" />
-                </div>
-                <CardTitle className="text-2xl">Deep Fundamentals</CardTitle>
-              </CardHeader>
-              <CardContent className="relative">
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  Go beyond surface-level knowledge. Understand how systems really work under the hood.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 opacity-50 dark:from-purple-950/20 dark:to-pink-950/20" />
-              <CardHeader className="relative">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
-                  <Target className="h-7 w-7 text-white" />
-                </div>
-                <CardTitle className="text-2xl">Real Interview Questions</CardTitle>
-              </CardHeader>
-              <CardContent className="relative">
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  Practice questions from actual technical interviews at top tech companies and trading firms.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="group relative overflow-hidden border-2 transition-all hover:shadow-xl hover:-translate-y-1">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-red-50 opacity-50 dark:from-orange-950/20 dark:to-red-950/20" />
-              <CardHeader className="relative">
-                <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 shadow-lg">
-                  <Zap className="h-7 w-7 text-white" />
-                </div>
-                <CardTitle className="text-2xl">Performance Focused</CardTitle>
-              </CardHeader>
-              <CardContent className="relative">
-                <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                  Learn to write fast, efficient code and understand the performance implications of your decisions.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Practice Section */}
-      <section id="practice" className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold">Practice in your language</h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-              Real systems programming problems. Master the concepts that interviewers actually ask.
-            </p>
-          </div>
-
-          <div className="mt-12 flex justify-center gap-6">
-            {/* Python */}
-            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
-              <CardContent className="flex flex-col items-center p-8">
-                <Image src="/PythonLogo.png" alt="Python" width={64} height={64} className="object-contain" />
-                <div className="mt-4 font-semibold">Python</div>
-              </CardContent>
-            </Card>
-
-            {/* C++ */}
-            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
-              <CardContent className="flex flex-col items-center p-8">
-                <Image src="/C++Logo.png" alt="C++" width={64} height={64} className="object-contain" />
-                <div className="mt-4 font-semibold">C++</div>
-              </CardContent>
-            </Card>
-
-            {/* Rust */}
-            <Card className="w-48 transition-all hover:scale-105 hover:shadow-lg">
-              <CardContent className="flex flex-col items-center p-8">
-                <Image src="/RustLogo.png" alt="Rust" width={64} height={64} className="object-contain" />
-                <div className="mt-4 font-semibold">Rust</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <Card className="mt-16 bg-zinc-50 dark:bg-zinc-900">
-            <CardContent className="flex items-start gap-4 p-8">
-              <div className="text-2xl">💡</div>
-              <div>
-                <h3 className="text-lg font-semibold">Sample Question: Cache Line Behavior</h3>
-                <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-                  What is the cache line size on most modern x86-64 processors, and why does false sharing occur when multiple threads write to different variables on the same cache line?
-                </p>
+          {/* Language Icons */}
+          <div className="flex justify-center gap-8 mb-12">
+            <div className="flex flex-col items-center gap-2 group cursor-pointer">
+              <div className="w-20 h-20 p-4 rounded-xl bg-card/80 backdrop-blur border border-white/10 group-hover:border-white/20 group-hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.1)] transition-all flex items-center justify-center">
+                <Image src="/PythonLogo.png" alt="Python" width={48} height={48} className="object-contain w-full h-full" />
               </div>
-            </CardContent>
-          </Card>
+              <span className="text-xs font-medium text-gray-500 group-hover:text-gray-300">Python</span>
+            </div>
+
+            <div className="flex flex-col items-center gap-2 group cursor-pointer">
+              <div className="w-20 h-20 p-4 rounded-xl bg-card/80 backdrop-blur border border-white/10 group-hover:border-white/20 group-hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.1)] transition-all flex items-center justify-center">
+                <Image src="/C++Logo.png" alt="C++" width={48} height={48} className="object-contain w-full h-full" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 group-hover:text-gray-300">C++</span>
+            </div>
+
+            <div className="flex flex-col items-center gap-2 group cursor-pointer">
+              <div className="w-20 h-20 p-4 rounded-xl bg-card/80 backdrop-blur border border-white/10 group-hover:border-white/20 group-hover:shadow-[0_0_20px_-5px_rgba(255,255,255,0.1)] transition-all flex items-center justify-center">
+                <Image src="/RustLogo.png" alt="Rust" width={48} height={48} className="object-contain w-full h-full" />
+              </div>
+              <span className="text-xs font-medium text-gray-500 group-hover:text-gray-300">Rust</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleGetStarted}
+            className="inline-flex items-center gap-2 bg-white text-black px-8 py-3.5 rounded-full font-medium hover:bg-gray-200 transition-colors shadow-[0_0_30px_-5px_rgba(255,255,255,0.2)]"
+          >
+            Start Practicing
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-4 h-4"
+            >
+              <path d="M12 5v14" />
+              <path d="m19 12-7 7-7-7" />
+            </svg>
+          </button>
         </div>
       </section>
 
-      {/* Comparison Table */}
-      <section className="bg-zinc-50 py-24 dark:bg-zinc-900">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold">How we compare</h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
-              See what makes GetLowLevel.io different from other platforms.
+      {/* Question Preview Section */}
+      <section id="preview" className="py-20 px-6 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          <div className="glass-card rounded-2xl overflow-hidden shadow-2xl animate-fade-in-up">
+            <div className="h-12 border-b border-white/5 bg-white/5 flex items-center px-4 justify-between backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                <div className="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50" />
+              </div>
+              <div className="text-xs font-mono text-gray-500">lib/data/questions.json</div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[500px]">
+              <div className="bg-[#0c0c0c]/90 backdrop-blur-md p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-white/5">
+                <div className="mb-6">
+                  <h3 className="text-xl font-semibold text-white mb-2">Three by three</h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    What is the value of{' '}
+                    <code className="bg-white/10 px-1 rounded text-gray-200">grid</code> after running this code?
+                  </p>
+                </div>
+
+                <div className="font-mono text-sm leading-relaxed overflow-x-auto custom-scrollbar">
+                  <div className="text-gray-500 mb-2">// python</div>
+                  <pre>
+                    <code>
+                      <span className="text-purple-400">grid</span> = []
+                      {'\n'}
+                      <span className="text-orange-400">for</span> i{' '}
+                      <span className="text-orange-400">in</span>{' '}
+                      <span className="text-blue-400">range</span>(
+                      <span className="text-green-400">3</span>):
+                      {'\n    '}
+                      <span className="text-purple-400">row</span> = []
+                      {'\n    '}
+                      <span className="text-orange-400">for</span> j{' '}
+                      <span className="text-orange-400">in</span>{' '}
+                      <span className="text-blue-400">range</span>(
+                      <span className="text-green-400">3</span>):
+                      {'\n        '}
+                      <span className="text-purple-400">row</span>.
+                      <span className="text-blue-400">append</span>(i * j)
+                      {'\n    '}
+                      <span className="text-purple-400">grid</span>.
+                      <span className="text-blue-400">append</span>(
+                      <span className="text-purple-400">row</span>)
+                      {'\n\n'}
+                      <span className="text-blue-400">print</span>(
+                      <span className="text-purple-400">grid</span>)
+                    </code>
+                  </pre>
+                </div>
+              </div>
+
+              <div className="p-6 md:p-8 bg-surface/80 backdrop-blur-md flex flex-col justify-center">
+                <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-6">Select Answer</h4>
+
+                <div className="space-y-3">
+                  <label className="cursor-pointer group block relative">
+                    <input type="radio" name="preview-q" className="peer sr-only" />
+                    <div className="p-4 rounded-xl border border-white/10 bg-card hover:border-white/20 transition-all flex items-center justify-between">
+                      <code className="text-sm font-mono text-gray-300">
+                        [[0, 1, 2], [0, 1, 2], [0, 1, 2]]
+                      </code>
+                      <div className="w-5 h-5 rounded-full border border-gray-600 peer-checked:border-green-500" />
+                    </div>
+                  </label>
+
+                  <label className="cursor-pointer group block relative">
+                    <input type="radio" name="preview-q" className="peer sr-only" defaultChecked />
+                    <div className="p-4 rounded-xl border border-white/10 bg-card hover:border-white/20 transition-all flex items-center justify-between">
+                      <code className="text-sm font-mono text-gray-300">
+                        [[0, 0, 0], [0, 1, 2], [0, 2, 4]]
+                      </code>
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="w-4 h-4 text-green-500 opacity-0 transition-all transform scale-75 peer-checked:opacity-100 peer-checked:scale-100"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                      </div>
+                    </div>
+                  </label>
+
+                  <label className="cursor-pointer group block relative">
+                    <input type="radio" name="preview-q" className="peer sr-only" />
+                    <div className="p-4 rounded-xl border border-white/10 bg-card hover:border-white/20 transition-all flex items-center justify-between">
+                      <code className="text-sm font-mono text-gray-300">
+                        [[0, 0, 0], [1, 1, 1], [2, 2, 2]]
+                      </code>
+                      <div className="w-5 h-5 rounded-full border border-gray-600" />
+                    </div>
+                  </label>
+
+                  <label className="cursor-pointer group block relative">
+                    <input type="radio" name="preview-q" className="peer sr-only" />
+                    <div className="p-4 rounded-xl border border-white/10 bg-card hover:border-white/20 transition-all flex items-center justify-between">
+                      <code className="text-sm font-mono text-gray-300">IndexError: list assignment index out of range</code>
+                      <div className="w-5 h-5 rounded-full border border-gray-600" />
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why GetLowLevel */}
+      <section className="py-24 border-t border-white/5 bg-surface/90 backdrop-blur relative z-10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="mb-16">
+            <h2 className="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-4">Why GetLowLevel?</h2>
+            <p className="text-gray-400 text-lg max-w-2xl">
+              In an age of AI, interviews test fundamentals. We help you master the layers beneath the syntax.
             </p>
           </div>
 
-          <div className="mt-12 overflow-x-auto">
-            <Card className="overflow-hidden border-2">
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-gradient-to-r from-zinc-50 to-zinc-100 hover:from-zinc-50 hover:to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 dark:hover:from-zinc-900 dark:hover:to-zinc-800">
-                      <TableHead className="w-[250px] py-6 text-base font-bold">Features</TableHead>
-                      <TableHead className="py-6 text-center">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="text-base font-bold text-foreground">GetLowLevel.io</div>
-              
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-white/5 relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-8 opacity-20 group-hover:opacity-40 transition-opacity">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-24 h-24 text-gray-500"
+                >
+                  <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z" />
+                  <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12" />
+                  <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17" />
+                </svg>
+              </div>
+
+              <h3 className="text-xl font-semibold text-white mb-6 relative z-10">Systems Depth</h3>
+
+              <div className="flex flex-wrap gap-2 mb-8 relative z-10">
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  Memory
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  Concurrency
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-500/10 text-orange-400 border border-orange-500/20">
+                  OS
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
+                  Networking
+                </span>
+                <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                  Architecture
+                </span>
+              </div>
+
+              <p className="text-sm text-gray-400 relative z-10">
+                Hundreds of deeply technical problems focused on behavior, tradeoffs, and correctness — not trivia.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-white/5 group">
+              <h3 className="text-xl font-semibold text-white mb-6">Live Rankings</h3>
+
+              <div className="h-32 flex items-end gap-2 mb-6 border-b border-white/10 pb-1">
+                <div className="flex-1 bg-white/5 rounded-t-sm h-[30%] group-hover:bg-white/10 transition-colors" />
+                <div className="flex-1 bg-white/5 rounded-t-sm h-[50%] group-hover:bg-white/10 transition-colors" />
+                <div className="flex-1 bg-green-500 rounded-t-sm h-[80%] shadow-[0_0_15px_rgba(34,197,94,0.3)] relative">
+                  <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] text-green-400 font-bold">
+                    YOU
+                  </div>
+                </div>
+                <div className="flex-1 bg-white/5 rounded-t-sm h-[40%] group-hover:bg-white/10 transition-colors" />
+                <div className="flex-1 bg-white/5 rounded-t-sm h-[60%] group-hover:bg-white/10 transition-colors" />
+              </div>
+
+              <p className="text-sm text-gray-400">
+                Know where you stand. Track progress, identify weak areas, and improve deliberately.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-white/5 flex flex-col justify-between overflow-hidden">
+              <h3 className="text-xl font-semibold text-white mb-6">Real Outcomes</h3>
+
+              <div className="bg-white text-black p-4 rounded-xl shadow-lg transform rotate-2 translate-y-2 transition-transform duration-300">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shrink-0">
+                    <span className="text-white font-bold text-xs">G</span>
+                  </div>
+                  <div>
+                    <div className="text-sm font-bold">Offer Letter: Senior Systems Eng</div>
+                    <div className="text-xs text-gray-600 mt-1">We are pleased to offer you the position...</div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-400 mt-8">
+                Built from real interviews. Used by candidates preparing for top-tier engineering roles.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Deep Practice Section */}
+      <section className="py-24 px-6 border-t border-white/5 bg-[#050505] relative z-10" id="practice">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-12">
+            <div className="xl:col-span-4 flex flex-col justify-center">
+              <h2 className="text-3xl md:text-4xl font-semibold text-white tracking-tight mb-6">
+                Practice thousands of problems.
+              </h2>
+              <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+                Smash the interview and land your dream job. Sharpen your hard and soft skills with an environment that
+                mimics the real thing.
+              </p>
+              <button 
+                onClick={handleGetStarted}
+                className="w-fit bg-white text-black px-6 py-3 rounded-lg font-medium hover:bg-gray-200 transition-colors flex items-center gap-2"
+              >
+                Enter Practice Mode
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-4 h-4"
+                >
+                  <path d="M5 12h14" />
+                  <path d="m12 5 7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="xl:col-span-8">
+              <div className="border border-white/10 rounded-xl bg-[#0c0c0c] overflow-hidden shadow-2xl flex flex-col h-[700px]">
+                <div className="flex items-center justify-between px-4 h-12 border-b border-white/5 bg-[#0a0a0a]">
+                  <div className="flex gap-4">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-[#111] rounded border border-white/5 text-xs text-gray-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-3 h-3"
+                      >
+                        <path d="m18 16 4-4-4-4" />
+                        <path d="m6 8-4 4 4 4" />
+                        <path d="m14.5 4-5 16" />
+                      </svg>
+                      Editor
+                    </div>
+
+                    <div className="flex items-center gap-2 px-3 py-1 text-xs text-gray-500 hover:text-gray-300 cursor-pointer transition-colors">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-3 h-3"
+                      >
+                        <path d="M12 7v14" />
+                        <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" />
+                      </svg>
+                      Explanation
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 py-1.5 text-xs font-medium text-green-400 bg-green-500/10 border border-green-500/20 rounded hover:bg-green-500/20 transition-colors">
+                      Run Tests
+                    </button>
+                    <button className="px-3 py-1.5 text-xs font-medium text-gray-400 border border-white/10 rounded hover:bg-white/5 transition-colors">
+                      Submit
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                  <div className="flex-1 p-4 font-mono text-sm overflow-auto custom-scrollbar relative">
+                    <div className="absolute left-4 top-4 text-gray-700 select-none text-right pr-4 border-r border-white/5">
+                      1<br />2<br />3<br />4<br />5<br />6<br />7<br />8<br />9<br />10<br />11<br />12<br />13<br />14<br />15<br />16<br />17<br />18<br />19<br />20
+                    </div>
+                    <div className="pl-12 text-gray-300 leading-normal">
+                      <pre>
+                        <code>{`namespace getlowlevel 
+{
+    template <typename Element>
+    class InstantWriteMultipleRead
+    {
+    public:
+        void Write(const Element& value)
+        {
+            // TODO: Implement atomic write
+            // Ensure readers see consistent state
+        }
+
+        bool Read(Element& out) const
+        {
+            // TODO: Implement lock-free read
+            return false;
+        }
+
+    private:
+        std::atomic<int> version_;
+    };
+}`}</code>
+                      </pre>
+                    </div>
+                  </div>
+
+                  <div className="md:w-80 border-l border-white/5 bg-[#0a0a0a] flex flex-col">
+                    <div className="p-4 border-b border-white/5">
+                      <h4 className="text-sm font-medium text-white mb-4">Test Cases</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
+                          <code className="text-xs text-gray-300">write-while-read</code>
+                          <div className="w-2 h-2 rounded-full bg-gray-600" />
                         </div>
-                      </TableHead>
-                      <TableHead className="py-6 text-center text-zinc-500 dark:text-zinc-400">
-                        <div className="text-base font-semibold">LeetCode</div>
-                      </TableHead>
-                      <TableHead className="py-6 text-center text-zinc-500 dark:text-zinc-400">
-                        <div className="text-base font-semibold">HackerRank</div>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Operating Systems</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
+                        <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
+                          <code className="text-xs text-gray-300">read-many</code>
+                          <div className="w-2 h-2 rounded-full bg-gray-600" />
                         </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
+                        <div className="flex items-center justify-between p-2 rounded bg-white/5 border border-white/5">
+                          <code className="text-xs text-gray-300">empty-read</code>
+                          <div className="w-2 h-2 rounded-full bg-gray-600" />
                         </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
+                      </div>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto">
+                      <details className="group border-b border-white/5">
+                        <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-white/5 transition-colors text-xs font-medium text-gray-400">
+                          Interviewer Follow Up
+                          <span className="transition-transform group-open:rotate-180">▾</span>
+                        </summary>
+                        <div className="px-4 pb-4 text-xs text-gray-500">
+                          How does this scale with 100 threads? What about cache coherence?
                         </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Computer Architecture</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Concurrency & Threading</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Systems Programming</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <X className="h-5 w-5 text-red-600 dark:text-red-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Data Structures & Algorithms</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
-                      <TableCell className="py-5 font-medium text-base">Free Forever</TableCell>
-                      <TableCell className="py-5 text-center">
-                        <div className="flex justify-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400">
-                          Partial
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="py-5 text-center">
-                        <Badge variant="secondary" className="bg-orange-100 text-orange-700 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-400">
-                          Partial
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
+                      </details>
+
+                      <details className="group border-b border-white/5">
+                        <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-white/5 transition-colors text-xs font-medium text-gray-400">
+                          Use Cases <span className="transition-transform group-open:rotate-180">▾</span>
+                        </summary>
+                        <div className="px-4 pb-4 text-xs text-gray-500">Real-time trading systems, telemetry buffers.</div>
+                      </details>
+
+                      <details className="group border-b border-white/5">
+                        <summary className="flex justify-between items-center p-4 cursor-pointer hover:bg-white/5 transition-colors text-xs font-medium text-gray-400">
+                          Uncook me! <span className="transition-transform group-open:rotate-180">▾</span>
+                        </summary>
+                        <div className="px-4 pb-4 text-xs text-gray-500">Hint: Look into Seqlocks.</div>
+                      </details>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-24">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold">Pricing</h2>
-            <p className="mt-4 text-lg text-zinc-600 dark:text-zinc-400">
+      <section className="py-24 px-6 relative z-10 border-t border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-semibold text-white tracking-tight mb-4">
+              Pricing
+            </h2>
+            <p className="text-lg text-gray-400">
               Complete access to all content, forever free.
             </p>
           </div>
 
-          <div className="mt-12 flex justify-center">
-            <Card className="w-full max-w-md border-2 border-purple-500 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
-              <CardHeader className="text-center">
-                <Badge className="mx-auto w-fit bg-purple-600 text-white hover:bg-purple-600">
+          <div className="relative">
+            <div className="bg-gradient-to-b from-white/5 to-white/[0.02] border border-white/10 rounded-2xl p-8 md:p-12 shadow-2xl backdrop-blur-sm">
+              <div className="flex justify-center mb-6">
+                <span className="px-4 py-1.5 rounded-full bg-white text-black text-sm font-semibold">
                   Forever Free
-                </Badge>
-                <CardTitle className="mt-6 text-6xl font-bold">$0</CardTitle>
-                <CardDescription>No credit card required</CardDescription>
-              </CardHeader>
+                </span>
+              </div>
 
-              <CardContent className="space-y-6">
-                <Button
-                  className="w-full rounded-full bg-purple-600 hover:bg-purple-700"
-                  size="lg"
+              <div className="text-center mb-4">
+                <div className="text-7xl md:text-8xl font-bold text-white mb-2">
+                  $0
+                </div>
+                <p className="text-gray-400 text-lg">No credit card required</p>
+              </div>
+
+              <div className="flex justify-center mb-8">
+                <button 
                   onClick={handleGetStarted}
+                  className="bg-white text-black px-8 py-3.5 rounded-full font-medium hover:bg-gray-200 transition-colors shadow-lg"
                 >
                   Get started now
-                </Button>
+                </button>
+              </div>
 
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Unlimited access to all questions</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Operating systems deep dives</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Computer architecture concepts</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Concurrency and threading</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Performance optimization techniques</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <span className="text-green-600">✓</span>
-                    <span className="text-sm">Community support</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Unlimited access to all questions</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Operating systems deep dives</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Computer architecture concepts</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Concurrency and threading</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Performance optimization techniques</span>
+                </div>
+                <div className="flex items-center gap-3 text-gray-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-green-500 flex-shrink-0"
+                  >
+                    <path d="M20 6 9 17l-5-5" />
+                  </svg>
+                  <span>Community support</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-200 bg-zinc-50 py-12 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
-            <div className="text-center md:text-left">
-              <div className="flex items-center justify-center gap-2 md:justify-start">
-                <Image src="/Soc.png" alt="GetLowLevel.io" width={40} height={40} className="object-contain" />
-                <span className="text-xl font-bold">GetLowLevel.io</span>
-              </div>
-              <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-                Master the low-level concepts that matter.
-              </p>
-            </div>
-            <div className="flex gap-6 text-sm">
-              <a href="#" className="hover:text-zinc-600 dark:hover:text-zinc-400">About</a>
-              <a href="#" className="hover:text-zinc-600 dark:hover:text-zinc-400">Contact</a>
-              <a href="#" className="hover:text-zinc-600 dark:hover:text-zinc-400">Terms</a>
-              <a href="#" className="hover:text-zinc-600 dark:hover:text-zinc-400">Privacy</a>
-            </div>
+      <footer className="border-t border-white/5 bg-background py-12 px-6 relative z-10" id="contact">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+          <div className="flex items-center gap-3">
+            <Image src="/Soc.png" alt="GetLowLevel.io" width={24} height={24} className="object-contain" />
+            <span className="text-sm font-medium text-gray-400">GetLowLevel © 2025</span>
           </div>
-          <div className="mt-8 text-center text-sm text-zinc-500">
-            © 2025 GetLowLevel.io. All rights reserved.
+
+          <div className="flex gap-8 text-sm text-gray-500">
+            <a href="#" className="hover:text-white transition-colors">
+              Privacy
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Terms
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Twitter
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              GitHub
+            </a>
           </div>
         </div>
       </footer>
