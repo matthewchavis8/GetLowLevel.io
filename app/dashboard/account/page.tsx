@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { logout } from "@/lib/firebase/auth";
+import { logout, syncUserToFirestore } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "firebase/auth";
 import { AlertCircle } from "lucide-react";
@@ -51,6 +51,8 @@ export default function AccountPage() {
     setIsSaving(true);
     try {
       await updateProfile(user, { displayName: displayName.trim() });
+      // Also update Firestore users collection
+      await syncUserToFirestore(user);
       setIsEditing(false);
     } catch (error) {
       console.error("Failed to update display name:", error);
