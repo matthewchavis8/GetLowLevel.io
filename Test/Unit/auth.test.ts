@@ -9,8 +9,15 @@ vi.mock('firebase/auth', () => ({
   GithubAuthProvider: vi.fn(),
 }));
 
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  setDoc: vi.fn(),
+  serverTimestamp: vi.fn(),
+}));
+
 vi.mock('@/lib/firebase/config', () => ({
   auth: {},
+  db: {},
 }));
 
 describe('Firebase Auth Functions', () => {

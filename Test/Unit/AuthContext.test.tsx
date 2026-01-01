@@ -5,11 +5,29 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 vi.mock('firebase/auth', () => ({
   onAuthStateChanged: vi.fn(),
+  GoogleAuthProvider: vi.fn(),
+  GithubAuthProvider: vi.fn(),
+}));
+
+vi.mock('firebase/firestore', () => ({
+  doc: vi.fn(),
+  setDoc: vi.fn(),
+  serverTimestamp: vi.fn(),
 }));
 
 vi.mock('@/lib/firebase/config', () => ({
   auth: {},
+  db: {},
 }));
+
+// Mock the syncUserToFirestore function to prevent it from running
+vi.mock('@/lib/firebase/auth', async () => {
+  const actual = await vi.importActual('@/lib/firebase/auth');
+  return {
+    ...actual,
+    syncUserToFirestore: vi.fn(),
+  };
+});
 
 const TestComponent = () => {
   const { user, loading } = useAuth();

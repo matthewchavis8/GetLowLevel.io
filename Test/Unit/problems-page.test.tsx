@@ -1,52 +1,73 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import ProblemsPage from '@/app/dashboard/problems/page';
 
-vi.mock('next/link', () => ({
-  default: ({ children, href }: { children: React.ReactNode; href: string }) => (
-    <a href={href}>{children}</a>
-  ),
+// Mock Firebase and auth
+vi.mock('@/lib/firebase/config', () => ({
+  db: {},
+  auth: {},
+}));
+
+vi.mock('firebase/firestore', () => ({
+  collection: vi.fn(),
+  addDoc: vi.fn(),
+  serverTimestamp: vi.fn(),
+  doc: vi.fn(),
+  updateDoc: vi.fn(),
+  increment: vi.fn(),
+  getDoc: vi.fn(() => Promise.resolve({ 
+    exists: () => true,
+    data: () => ({ completedQuestions: [] })
+  })),
+  arrayUnion: vi.fn(),
+}));
+
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: { uid: 'test-uid', email: 'test@test.com' },
+    loading: false,
+  }),
 }));
 
 describe('ProblemsPage', () => {
-  it('renders the page title', () => {
-    render(<ProblemsPage />);
-    expect(screen.getByText('Problems')).toBeInTheDocument();
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  it('renders the placeholder description', () => {
+  it('renders the question title', () => {
     render(<ProblemsPage />);
-    expect(screen.getByText(/Practice questions/i)).toBeInTheDocument();
+    expect(screen.getByText('Bodyguard')).toBeInTheDocument();
   });
 
-  it('renders featured section', () => {
+  it('renders the question description', () => {
     render(<ProblemsPage />);
-    expect(screen.getByText('Featured')).toBeInTheDocument();
+    expect(screen.getByText(/Observe the code snippet below/i)).toBeInTheDocument();
   });
 
-  it('renders sample topics', () => {
+  it('renders the code block', () => {
+    render(<ProblemsPage />);
+    expect(screen.getByText(/int main/)).toBeInTheDocument();
+  });
+
+  it('renders all answer options', () => {
     render(<ProblemsPage />);
     
-    expect(screen.getByText('Memory layout & pointers')).toBeInTheDocument();
-    expect(screen.getByText('TCP flow control')).toBeInTheDocument();
-    expect(screen.getByText('Struct vs class')).toBeInTheDocument();
-    expect(screen.getByText('Cache locality')).toBeInTheDocument();
+    expect(screen.getByText(/The program will compile and run successfully/i)).toBeInTheDocument();
+    expect(screen.getByText(/Warning only: the compiler warns/i)).toBeInTheDocument();
+    expect(screen.getByText(/Runtime error: program crashes/i)).toBeInTheDocument();
+    expect(screen.getByText(/Compilation error: multiple definition/i)).toBeInTheDocument();
   });
 
-  it('renders difficulty badges', () => {
+  it('renders the submit button', () => {
     render(<ProblemsPage />);
-    
-    expect(screen.getByText('Easy')).toBeInTheDocument();
-    expect(screen.getAllByText('Medium').length).toBeGreaterThan(0);
-    expect(screen.getByText('Hard')).toBeInTheDocument();
+    expect(screen.getByText('Submit')).toBeInTheDocument();
   });
 
-  it('renders link to explore page', () => {
+  it('renders action buttons', () => {
     render(<ProblemsPage />);
     
-    const links = screen.getAllByText('Browse tracks');
-    expect(links.length).toBeGreaterThan(0);
-    expect(links[0]).toHaveAttribute('href', '/dashboard/explore');
+    expect(screen.getByText("I'm Cooked")).toBeInTheDocument();
+    expect(screen.getByText('Random Question')).toBeInTheDocument();
   });
 });
 
