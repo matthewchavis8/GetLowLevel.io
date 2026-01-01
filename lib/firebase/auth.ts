@@ -26,7 +26,9 @@ export const syncUserToFirestore = async (user: User) => {
       totalCompleted: 0,
       correctCount: 0,
       incorrectCount: 0,
-    }
+    },
+    // Track which questions have been completed (for unique count)
+    completedQuestions: []
   };
 
   try {

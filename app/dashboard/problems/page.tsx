@@ -3,7 +3,16 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { db } from "@/lib/firebase/config";
-import { collection, addDoc, serverTimestamp, doc, updateDoc, increment } from "firebase/firestore";
+import { 
+  collection, 
+  addDoc, 
+  serverTimestamp, 
+  doc, 
+  updateDoc, 
+  increment,
+  getDoc,
+  arrayUnion 
+} from "firebase/firestore";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -76,17 +85,30 @@ export default function ProblemsPage() {
         createdAt: serverTimestamp(),
       });
 
-      // 2. Update the aggregate counters on the user document (The "Cheap" way)
+      // 2. Check if this is the first time they've solved this question
       const userRef = doc(db, "users", user.uid);
-      await updateDoc(userRef, {
-        "stats.totalCompleted": increment(1),
+      const userDoc = await getDoc(userRef);
+      const userData = userDoc.data();
+      const completedQuestions = userData?.completedQuestions || [];
+      const isFirstTimeCorrect = correct && !completedQuestions.includes(mockQuestion.title);
+
+      // 3. Update the aggregate counters
+      const updates: any = {
         "stats.correctCount": correct ? increment(1) : increment(0),
         "stats.incorrectCount": !correct ? increment(1) : increment(0),
         // Track per-language correct counts for the radar chart
         [`stats.languages.${mockQuestion.language}`]: correct ? increment(1) : increment(0),
         // Track per-topic progress
         [`stats.topics.${mockQuestion.topic}`]: correct ? increment(1) : increment(0),
-      });
+      };
+
+      // Only increment totalCompleted if this is their first time solving this question
+      if (isFirstTimeCorrect) {
+        updates["stats.totalCompleted"] = increment(1);
+        updates["completedQuestions"] = arrayUnion(mockQuestion.title);
+      }
+
+      await updateDoc(userRef, updates);
 
       setSubmitted(true);
     } catch (error) {
