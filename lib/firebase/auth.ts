@@ -15,25 +15,39 @@ export const syncUserToFirestore = async (user: User) => {
   if (!user) return;
 
   const userRef = doc(db, "users", user.uid);
-  const userData = {
-    uid: user.uid,
-    displayName: user.displayName,
-    email: user.email,
-    photoURL: user.photoURL,
-    lastLogin: serverTimestamp(),
-    // Initialize counters if they don't exist
-    stats: {
-      totalCompleted: 0,
-      correctCount: 0,
-      incorrectCount: 0,
-    },
-    // Track which questions have been completed (for unique count)
-    completedQuestions: []
-  };
-
+  
   try {
-    // Using setDoc with merge: true so we don't overwrite existing counters
-    await setDoc(userRef, userData, { merge: true });
+    // Check if user document exists first
+    const { getDoc } = await import("firebase/firestore");
+    const userDoc = await getDoc(userRef);
+    
+    if (userDoc.exists()) {
+      // User exists, only update profile info and lastLogin
+      await setDoc(userRef, {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        lastLogin: serverTimestamp(),
+      }, { merge: true });
+    } else {
+      // New user, initialize everything
+      await setDoc(userRef, {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        lastLogin: serverTimestamp(),
+        stats: {
+          totalCompleted: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          languages: {},
+          topics: {}
+        },
+        completedQuestions: []
+      });
+    }
   } catch (error) {
     console.error("Error syncing user to Firestore:", error);
   }

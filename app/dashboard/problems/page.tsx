@@ -74,8 +74,10 @@ export default function ProblemsPage() {
     setIsCorrect(correct);
 
     try {
+      console.log("Starting submission process...");
+      
       // 1. Record the detailed submission history
-      await addDoc(collection(db, "user_submissions"), {
+      const submissionRef = await addDoc(collection(db, "user_submissions"), {
         userId: user.uid,
         questionTitle: mockQuestion.title,
         status: correct ? "correct" : "incorrect",
@@ -84,36 +86,81 @@ export default function ProblemsPage() {
         language: mockQuestion.language,
         createdAt: serverTimestamp(),
       });
+      console.log("Submission recorded with ID:", submissionRef.id);
 
       // 2. Check if this is the first time they've solved this question
       const userRef = doc(db, "users", user.uid);
       const userDoc = await getDoc(userRef);
       const userData = userDoc.data();
+      console.log("Current user data:", userData);
+      
       const completedQuestions = userData?.completedQuestions || [];
       const isFirstTimeCorrect = correct && !completedQuestions.includes(mockQuestion.title);
+      console.log("Is first time correct?", isFirstTimeCorrect);
 
-      // 3. Update the aggregate counters
-      const updates: any = {
-        "stats.correctCount": correct ? increment(1) : increment(0),
-        "stats.incorrectCount": !correct ? increment(1) : increment(0),
-        // Track per-language correct counts for the radar chart
-        [`stats.languages.${mockQuestion.language}`]: correct ? increment(1) : increment(0),
-        // Track per-topic progress
-        [`stats.topics.${mockQuestion.topic}`]: correct ? increment(1) : increment(0),
-      };
-
-      // Only increment totalCompleted if this is their first time solving this question
-      if (isFirstTimeCorrect) {
-        updates["stats.totalCompleted"] = increment(1);
-        updates["completedQuestions"] = arrayUnion(mockQuestion.title);
+      // 3. Ensure stats structure exists first
+      const currentStats = userData?.stats || {};
+      console.log("Current stats:", currentStats);
+      
+      if (!userData?.stats || !currentStats.languages || !currentStats.topics) {
+        console.log("Initializing stats structure...");
+        await updateDoc(userRef, {
+          stats: {
+            totalCompleted: currentStats.totalCompleted || 0,
+            correctCount: currentStats.correctCount || 0,
+            incorrectCount: currentStats.incorrectCount || 0,
+            languages: currentStats.languages || {},
+            topics: currentStats.topics || {}
+          }
+        });
+        console.log("Stats structure initialized");
       }
 
-      await updateDoc(userRef, updates);
+      // 4. Update the aggregate counters using increments
+      const updates: any = {};
+      
+      // Track incorrect attempts (every wrong answer counts)
+      if (!correct) {
+        updates["stats.incorrectCount"] = increment(1);
+      }
+
+      // Only increment correct count, totalCompleted, languages, and topics if this is their first time solving this question correctly
+      if (isFirstTimeCorrect) {
+        updates["stats.correctCount"] = increment(1);
+        updates["stats.totalCompleted"] = increment(1);
+        updates["completedQuestions"] = arrayUnion(mockQuestion.title);
+        
+        // Track unique questions per language
+        if (mockQuestion.language && mockQuestion.language !== null) {
+          updates[`stats.languages.${mockQuestion.language}`] = increment(1);
+        }
+        
+        // Track unique questions per topic
+        if (mockQuestion.topic && mockQuestion.topic !== null) {
+          updates[`stats.topics.${mockQuestion.topic}`] = increment(1);
+        }
+      }
+
+      console.log("Updates to apply:", Object.keys(updates));
+
+      if (Object.keys(updates).length > 0) {
+        await updateDoc(userRef, updates);
+        console.log("Update successful!");
+        
+        // Verify the update was successful
+        const verifyDoc = await getDoc(userRef);
+        const verifyData = verifyDoc.data();
+        console.log("Stats after update:", verifyData?.stats);
+        console.log("Completed questions:", verifyData?.completedQuestions);
+      }
 
       setSubmitted(true);
-    } catch (error) {
+      console.log("Submission complete!");
+    } catch (error: any) {
       console.error("Error submitting answer:", error);
-      alert("Failed to save progress. Check your console.");
+      console.error("Error code:", error?.code);
+      console.error("Error message:", error?.message);
+      alert(`Failed to save progress: ${error?.message || "Unknown error"}. Check your console for details.`);
     } finally {
       setIsSubmitting(false);
     }
