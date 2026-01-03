@@ -119,6 +119,7 @@ export default function QuestionsPage() {
         <div className="fixed inset-0 z-0 h-screen w-full pointer-events-none" style={{ transform: 'translateZ(0)' }}>
           {isMounted && (
             <div className="absolute inset-0 w-full h-full opacity-30">
+              {/* @ts-expect-error spline-viewer is a custom element loaded at runtime */}
               <spline-viewer
                 url="https://prod.spline.design/Ete3ch9NnNoHZqYW/scene.splinecode"
                 className="w-full h-full"

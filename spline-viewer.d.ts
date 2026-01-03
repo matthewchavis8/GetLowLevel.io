@@ -1,4 +1,4 @@
-import 'react';
+import React from 'react';
 
 declare global {
   namespace JSX {
@@ -7,7 +7,6 @@ declare global {
         React.HTMLAttributes<HTMLElement> & {
           url?: string;
           class?: string;
-          className?: string;
         },
         HTMLElement
       >;
