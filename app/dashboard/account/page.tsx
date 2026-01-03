@@ -184,9 +184,13 @@ export default function AccountPage() {
                 className="object-cover"
               />
             ) : (
-              <div className="flex size-full items-center justify-center text-2xl font-semibold text-foreground bg-muted">
-                {(displayName || "U").trim().charAt(0).toUpperCase()}
-              </div>
+              <Image
+                src="/blankAvatar.png"
+                alt="Default avatar"
+                fill
+                sizes="96px"
+                className="object-cover"
+              />
             )}
           </div>
 

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 import { Github, Linkedin, Twitter } from "lucide-react";
+import Image from "next/image";
 
 interface LeaderboardUser {
   rank: number;
@@ -160,9 +161,13 @@ export default function LeaderboardPage() {
                       {user.showAvatar && user.avatar ? (
                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="flex size-full items-center justify-center text-2xl font-semibold bg-muted">
-                          {user.username.charAt(0).toUpperCase()}
-                        </div>
+                        <Image
+                          src="/blankAvatar.png"
+                          alt="Default avatar"
+                          width={96}
+                          height={96}
+                          className="w-full h-full object-cover"
+                        />
                       )}
                     </div>
                   </div>
@@ -260,9 +265,13 @@ export default function LeaderboardPage() {
                       {user.showAvatar && user.avatar ? (
                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                       ) : (
-                        <div className="flex size-full items-center justify-center text-sm font-semibold bg-muted">
-                          {user.username.charAt(0).toUpperCase()}
-                        </div>
+                        <Image
+                          src="/blankAvatar.png"
+                          alt="Default avatar"
+                          width={48}
+                          height={48}
+                          className="w-full h-full object-cover"
+                        />
                       )}
                     </div>
                   </div>

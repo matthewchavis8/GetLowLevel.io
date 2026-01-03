@@ -84,24 +84,25 @@ function MobileNavLink({
 
 function AvatarButton() {
   const { user } = useAuth();
-  const photoUrl = user?.photoURL || "";
-  const name = user?.displayName || user?.email || "Account";
-  const initial = (name || "A").trim().charAt(0).toUpperCase();
 
   return (
     <div className="relative size-9 overflow-hidden rounded-full border border-border bg-card">
-      {photoUrl ? (
+      {user?.photoURL ? (
         <Image
-          src={photoUrl}
-          alt={name}
+          src={user.photoURL}
+          alt={user.displayName || "Profile"}
           fill
           sizes="36px"
           className="object-cover"
         />
       ) : (
-        <div className="flex size-full items-center justify-center text-sm font-semibold text-foreground">
-          {initial}
-        </div>
+        <Image
+          src="/blankAvatar.png"
+          alt="Default avatar"
+          fill
+          sizes="36px"
+          className="object-cover"
+        />
       )}
     </div>
   );
@@ -268,12 +269,13 @@ export function DashboardNavbar() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-xl font-semibold bg-muted">
-                        {(user?.displayName || user?.email || "A")
-                          .trim()
-                          .charAt(0)
-                          .toUpperCase()}
-                      </div>
+                      <Image
+                        src="/blankAvatar.png"
+                        alt="Default avatar"
+                        fill
+                        sizes="64px"
+                        className="object-cover"
+                      />
                     )}
                   </div>
                   <div className="text-center">
