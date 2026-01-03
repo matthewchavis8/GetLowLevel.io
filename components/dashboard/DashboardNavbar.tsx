@@ -21,7 +21,13 @@ import {
   PieChart,
   Settings,
   LogOut,
+  Github,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
 
 function NavLink({
   href,
@@ -105,6 +111,33 @@ export function DashboardNavbar() {
   const { user } = useAuth();
   const router = useRouter();
   const { toggleTheme, theme } = useTheme();
+  const [socials, setSocials] = useState<{
+    github?: string;
+    linkedin?: string;
+    twitter?: string;
+  }>({});
+  const [showAvatar, setShowAvatar] = useState(false);
+
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      if (!user) return;
+      
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setSocials(data.socials || {});
+          setShowAvatar(data.settings?.showAvatar ?? false);
+        }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
+      }
+    };
+    
+    loadUserSettings();
+  }, [user]);
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
@@ -224,9 +257,9 @@ export function DashboardNavbar() {
               </SheetHeader>
               <div className="p-6">
                 {/* Profile Header */}
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex flex-col items-center gap-3 mb-6">
                   <div className="relative size-16 overflow-hidden rounded-full border-2 border-border bg-card">
-                    {user?.photoURL ? (
+                    {showAvatar && user?.photoURL ? (
                       <Image
                         src={user.photoURL}
                         alt={user.displayName || "Profile"}
@@ -235,7 +268,7 @@ export function DashboardNavbar() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="flex size-full items-center justify-center text-xl font-semibold text-foreground">
+                      <div className="flex size-full items-center justify-center text-xl font-semibold bg-muted">
                         {(user?.displayName || user?.email || "A")
                           .trim()
                           .charAt(0)
@@ -243,10 +276,49 @@ export function DashboardNavbar() {
                       </div>
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="text-center">
                     <div className="text-xl font-bold text-foreground truncate">
                       {user?.displayName || "User"}
                     </div>
+                    
+                    {/* Social Links */}
+                    {(socials.github || socials.linkedin || socials.twitter) && (
+                      <div className="flex items-center justify-center gap-3 mt-2">
+                        {socials.github && (
+                          <a
+                            href={socials.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            title="Github"
+                          >
+                            <Github className="size-4" />
+                          </a>
+                        )}
+                        {socials.linkedin && (
+                          <a
+                            href={socials.linkedin}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            title="LinkedIn"
+                          >
+                            <Linkedin className="size-4" />
+                          </a>
+                        )}
+                        {socials.twitter && (
+                          <a
+                            href={socials.twitter}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            title="Twitter"
+                          >
+                            <Twitter className="size-4" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

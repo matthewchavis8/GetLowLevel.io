@@ -1,14 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { logout, syncUserToFirestore } from "@/lib/firebase/auth";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "firebase/auth";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Github, Linkedin, Twitter, X } from "lucide-react";
+import { db } from "@/lib/firebase/config";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 // Basic profanity filter - can be expanded
 const PROFANITY_LIST = [
@@ -32,9 +34,44 @@ export default function AccountPage() {
   const [displayName, setDisplayName] = useState(user?.displayName || "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
+  
+  // Privacy & Social settings
+  const [showAvatar, setShowAvatar] = useState(false);
+  const [github, setGithub] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [twitter, setTwitter] = useState("");
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   const email = user?.email || "";
   const photoUrl = user?.photoURL || "";
+
+  // Load user settings from Firestore
+  useEffect(() => {
+    const loadSettings = async () => {
+      if (!user) return;
+      
+      try {
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setShowAvatar(data.settings?.showAvatar ?? false);
+          setGithub(data.socials?.github || "");
+          setLinkedin(data.socials?.linkedin || "");
+          setTwitter(data.socials?.twitter || "");
+        }
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      } finally {
+        setIsLoadingSettings(false);
+      }
+    };
+    
+    loadSettings();
+  }, [user]);
 
   const handleSave = async () => {
     if (!user || !displayName.trim()) {
@@ -62,23 +99,68 @@ export default function AccountPage() {
     }
   };
 
+  const handleToggleAvatar = async () => {
+    if (!user) return;
+    
+    const newValue = !showAvatar;
+    setShowAvatar(newValue);
+    
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        "settings.showAvatar": newValue,
+      });
+    } catch (error) {
+      console.error("Failed to save avatar setting:", error);
+      // Revert on error
+      setShowAvatar(!newValue);
+      alert("Failed to save setting. Please try again.");
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    if (!user) return;
+    
+    setIsSaving(true);
+    try {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        "socials.github": github.trim(),
+        "socials.linkedin": linkedin.trim(),
+        "socials.twitter": twitter.trim(),
+      });
+      alert("Settings saved successfully!");
+    } catch (error) {
+      console.error("Failed to save settings:", error);
+      alert("Failed to save settings. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleSignOut = async () => {
     await logout();
     router.push("/");
   };
 
   const handleDeleteAccount = () => {
-    // Placeholder for delete account functionality
-    const confirmed = confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
-    if (confirmed) {
-      alert("Delete account functionality coming soon!");
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = () => {
+    if (deleteConfirmText.toLowerCase() !== "yes") {
+      alert('Please type "yes" to confirm deletion');
+      return;
     }
+    
+    // TODO: Implement actual account deletion
+    alert("Delete account functionality coming soon!");
+    setShowDeleteConfirm(false);
+    setDeleteConfirmText("");
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-3xl font-semibold tracking-tight">Settings</h1>
         <p className="text-muted-foreground">
@@ -86,11 +168,14 @@ export default function AccountPage() {
         </p>
       </div>
 
-      <Card className="mx-auto max-w-md p-6">
-        {/* Profile Avatar */}
-        <div className="flex justify-center mb-6">
-          <div className="relative size-24 overflow-hidden rounded-full border-2 border-border bg-card">
-            {photoUrl ? (
+      {/* Profile Section */}
+      <Card className="max-w-2xl p-6">
+        <h2 className="text-xl font-semibold mb-6">Profile</h2>
+        
+        {/* Profile Avatar with Social Links */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative size-24 overflow-hidden rounded-full border-2 border-border bg-card mb-4">
+            {showAvatar && photoUrl ? (
               <Image
                 src={photoUrl}
                 alt={displayName || "Profile"}
@@ -99,11 +184,73 @@ export default function AccountPage() {
                 className="object-cover"
               />
             ) : (
-              <div className="flex size-full items-center justify-center text-2xl font-semibold text-foreground">
+              <div className="flex size-full items-center justify-center text-2xl font-semibold text-foreground bg-muted">
                 {(displayName || "U").trim().charAt(0).toUpperCase()}
               </div>
             )}
           </div>
+
+          {/* Social Links Below Avatar */}
+          {(github || linkedin || twitter) && (
+            <div className="flex items-center gap-3">
+              {github && (
+                <a
+                  href={github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  title="Github"
+                >
+                  <Github className="size-5" />
+                </a>
+              )}
+              {linkedin && (
+                <a
+                  href={linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  title="LinkedIn"
+                >
+                  <Linkedin className="size-5" />
+                </a>
+              )}
+              {twitter && (
+                <a
+                  href={twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  title="Twitter"
+                >
+                  <Twitter className="size-5" />
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Display Profile Picture Toggle */}
+          <div className="flex items-center gap-3 mt-4">
+            <button
+              onClick={handleToggleAvatar}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                showAvatar ? "bg-primary" : "bg-muted"
+              }`}
+              disabled={isLoadingSettings}
+            >
+              <span
+                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                  showAvatar ? "translate-x-6" : "translate-x-1"
+                }`}
+              />
+            </button>
+            <label className="text-sm font-medium text-foreground cursor-pointer" onClick={handleToggleAvatar}>
+              Display Profile Picture
+            </label>
+          </div>
+          <p className="text-xs text-muted-foreground text-center mt-1">
+            Show your profile picture on leaderboards
+          </p>
         </div>
 
         {/* Warning Message */}
@@ -159,7 +306,7 @@ export default function AccountPage() {
 
         {/* Edit / Save Button */}
         {isEditing ? (
-          <div className="flex gap-2 mb-4">
+          <div className="flex gap-2">
             <Button
               variant="default"
               className="flex-1"
@@ -183,17 +330,85 @@ export default function AccountPage() {
         ) : (
           <Button
             variant="outline"
-            className="w-full mb-4"
+            className="w-full"
             onClick={() => setIsEditing(true)}
           >
             Edit Display Name
           </Button>
         )}
+      </Card>
 
-        {/* Divider */}
-        <div className="my-6 border-t border-border" />
+      {/* Social Links */}
+      <Card className="max-w-2xl p-6">
+        <h2 className="text-xl font-semibold mb-2">Social Links</h2>
+        <p className="text-sm text-muted-foreground mb-4">
+          Add your social media profiles to display on your public profile
+        </p>
+        
+        <div className="space-y-4">
+          {/* GitHub */}
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
+              <Github className="size-4" />
+              Github
+            </label>
+            <input
+              type="url"
+              value={github}
+              onChange={(e) => setGithub(e.target.value)}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              placeholder="https://github.com/username"
+              disabled={isLoadingSettings}
+            />
+          </div>
 
-        {/* Account Actions */}
+          {/* LinkedIn */}
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
+              <Linkedin className="size-4" />
+              LinkedIn
+            </label>
+            <input
+              type="url"
+              value={linkedin}
+              onChange={(e) => setLinkedin(e.target.value)}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              placeholder="https://linkedin.com/in/username"
+              disabled={isLoadingSettings}
+            />
+          </div>
+
+          {/* Twitter */}
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
+              <Twitter className="size-4" />
+              Twitter
+            </label>
+            <input
+              type="url"
+              value={twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              placeholder="https://twitter.com/username"
+              disabled={isLoadingSettings}
+            />
+          </div>
+
+          <Button
+            variant="default"
+            className="w-full"
+            onClick={handleSaveSettings}
+            disabled={isSaving || isLoadingSettings}
+          >
+            {isSaving ? "Saving..." : "Save Social Links"}
+          </Button>
+        </div>
+      </Card>
+
+      {/* Account Actions */}
+      <Card className="max-w-2xl p-6">
+        <h2 className="text-xl font-semibold mb-4">Account Actions</h2>
+        
         <div className="space-y-2">
           <Button
             variant="ghost"
@@ -212,6 +427,63 @@ export default function AccountPage() {
           </Button>
         </div>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <Card className="max-w-md w-full p-6 relative">
+            <button
+              onClick={() => {
+                setShowDeleteConfirm(false);
+                setDeleteConfirmText("");
+              }}
+              className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+            >
+              <X className="size-5" />
+            </button>
+
+            <h3 className="text-xl font-bold mb-2 text-red-600 dark:text-red-400">Delete Account</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              This action cannot be undone. This will permanently delete your account and remove all your data from our servers.
+            </p>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">
+                Type <span className="font-bold text-foreground">yes</span> to confirm
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="yes"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setDeleteConfirmText("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1 bg-red-600 hover:bg-red-700"
+                onClick={confirmDelete}
+                disabled={deleteConfirmText.toLowerCase() !== "yes"}
+              >
+                Delete Account
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

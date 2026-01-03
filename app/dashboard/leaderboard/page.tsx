@@ -4,16 +4,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
+import { Github, Linkedin, Twitter } from "lucide-react";
 
 interface LeaderboardUser {
   rank: number;
   uid: string;
   username: string;
   avatar?: string;
+  showAvatar: boolean;
   correct: number;
   incorrect: number;
   successRate: number;
   score: number;
+  socials?: {
+    github?: string;
+    linkedin?: string;
+    twitter?: string;
+  };
 }
 
 export default function LeaderboardPage() {
@@ -46,10 +53,12 @@ export default function LeaderboardPage() {
             uid: doc.id,
             username: data.displayName || data.email?.split("@")[0] || "Anonymous",
             avatar: data.photoURL,
+            showAvatar: data.settings?.showAvatar ?? false,
             correct,
             incorrect,
             successRate: Math.round(successRate * 100) / 100,
             score,
+            socials: data.socials,
           });
         });
 
@@ -148,12 +157,12 @@ export default function LeaderboardPage() {
                 <div className="relative">
                   <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 p-0.5">
                     <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                      {user.avatar ? (
+                      {user.showAvatar && user.avatar ? (
                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                       ) : (
-                        <svg className="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                        <div className="flex size-full items-center justify-center text-2xl font-semibold bg-muted">
+                          {user.username.charAt(0).toUpperCase()}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -165,7 +174,46 @@ export default function LeaderboardPage() {
 
                 {/* Username */}
                 <div className="text-center pt-2">
-                  <h3 className="text-xl font-bold">{user.username}</h3>
+                  <h3 className="text-2xl font-black tracking-tight">{user.username}</h3>
+                  
+                  {/* Social Links */}
+                  {(user.socials?.github || user.socials?.linkedin || user.socials?.twitter) && (
+                    <div className="flex items-center justify-center gap-2 mt-2">
+                      {user.socials.github && (
+                        <a
+                          href={user.socials.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          title="Github"
+                        >
+                          <Github className="size-4" />
+                        </a>
+                      )}
+                      {user.socials.linkedin && (
+                        <a
+                          href={user.socials.linkedin}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          title="LinkedIn"
+                        >
+                          <Linkedin className="size-4" />
+                        </a>
+                      )}
+                      {user.socials.twitter && (
+                        <a
+                          href={user.socials.twitter}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          title="Twitter"
+                        >
+                          <Twitter className="size-4" />
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Stats Grid */}
@@ -209,12 +257,12 @@ export default function LeaderboardPage() {
                   </div>
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 p-0.5">
                     <div className="w-full h-full rounded-full bg-background flex items-center justify-center overflow-hidden">
-                      {user.avatar ? (
+                      {user.showAvatar && user.avatar ? (
                         <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
                       ) : (
-                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
+                        <div className="flex size-full items-center justify-center text-sm font-semibold bg-muted">
+                          {user.username.charAt(0).toUpperCase()}
+                        </div>
                       )}
                     </div>
                   </div>
