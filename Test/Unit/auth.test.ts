@@ -12,6 +12,7 @@ vi.mock('firebase/auth', () => ({
 vi.mock('firebase/firestore', () => ({
   doc: vi.fn(),
   setDoc: vi.fn(),
+  getDoc: vi.fn(() => Promise.resolve({ exists: () => false })),
   serverTimestamp: vi.fn(),
 }));
 
