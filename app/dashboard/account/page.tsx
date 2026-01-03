@@ -10,7 +10,8 @@ import { useRouter } from "next/navigation";
 import { updateProfile } from "firebase/auth";
 import { AlertCircle, Github, Linkedin, Twitter, X } from "lucide-react";
 import { db } from "@/lib/firebase/config";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { deleteUser } from "firebase/auth";
 
 // Basic profanity filter - can be expanded
 const PROFANITY_LIST = [
@@ -43,6 +44,7 @@ export default function AccountPage() {
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const email = user?.email || "";
   const photoUrl = user?.photoURL || "";
@@ -147,16 +149,48 @@ export default function AccountPage() {
     setShowDeleteConfirm(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (deleteConfirmText.toLowerCase() !== "yes") {
       alert('Please type "yes" to confirm deletion');
       return;
     }
     
-    // TODO: Implement actual account deletion
-    alert("Delete account functionality coming soon!");
-    setShowDeleteConfirm(false);
-    setDeleteConfirmText("");
+    if (!user) return;
+
+    setIsDeleting(true);
+    
+    try {
+      // 1. Delete user's submissions
+      const submissionsRef = collection(db, "user_submissions");
+      const submissionsQuery = query(submissionsRef, where("userId", "==", user.uid));
+      const submissionsSnapshot = await getDocs(submissionsQuery);
+      
+      const deleteSubmissions = submissionsSnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deleteSubmissions);
+      
+      // 2. Delete user document
+      const userRef = doc(db, "users", user.uid);
+      await deleteDoc(userRef);
+      
+      // 3. Delete Firebase Authentication account
+      await deleteUser(user);
+      
+      // 4. Redirect to home page
+      router.push("/");
+    } catch (error: any) {
+      console.error("Error deleting account:", error);
+      
+      // Handle re-authentication requirement
+      if (error.code === "auth/requires-recent-login") {
+        alert("For security reasons, please sign out and sign back in before deleting your account.");
+      } else {
+        alert(`Failed to delete account: ${error.message || "Unknown error"}. Please try again or contact support.`);
+      }
+      
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+      setDeleteConfirmText("");
+    }
   };
 
   return (
@@ -473,6 +507,7 @@ export default function AccountPage() {
                   setShowDeleteConfirm(false);
                   setDeleteConfirmText("");
                 }}
+                disabled={isDeleting}
               >
                 Cancel
               </Button>
@@ -480,9 +515,9 @@ export default function AccountPage() {
                 variant="destructive"
                 className="flex-1 bg-red-600 hover:bg-red-700"
                 onClick={confirmDelete}
-                disabled={deleteConfirmText.toLowerCase() !== "yes"}
+                disabled={deleteConfirmText.toLowerCase() !== "yes" || isDeleting}
               >
-                Delete Account
+                {isDeleting ? "Deleting..." : "Delete Account"}
               </Button>
             </div>
           </Card>
